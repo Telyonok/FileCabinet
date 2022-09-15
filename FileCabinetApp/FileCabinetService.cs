@@ -1,31 +1,35 @@
-using System.Net;
-
-public class FileCabinetService
+﻿namespace FileCabinetApp
 {
-    private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
-
-    public int CreateRecord(string firstName, string lastName, DateTime dateOfBirth)
+    public class FileCabinetService
     {
-        var record = new FileCabinetRecord
+        private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
+
+        public int CreateRecord(string firstName, string lastName, char sex, short weight, decimal height, DateTime dateOfBirth)
         {
-            Id = this.list.Count + 1,
-            FirstName = firstName,
-            LastName = lastName,
-            DateOfBirth = dateOfBirth,
-        };
+            var record = new FileCabinetRecord
+            {
+                Id = this.list.Count + 1,
+                FirstName = firstName,
+                LastName = lastName,
+                Sex = sex,
+                Weight = weight,
+                Height = height,
+                DateOfBirth = dateOfBirth,
+            };
 
-        this.list.Add(record);
+            this.list.Add(record);
 
-        return record.Id;
-    }
+            return record.Id;
+        }
 
-    public FileCabinetRecord[] GetRecords()
-    {
-        return this.list.ToArray();
-    }
+        public FileCabinetRecord[] GetRecords()
+        {
+            return this.list.ToArray();
+        }
 
-    public int GetStat()
-    {
-        return this.list.Count;
+        public int GetStat()
+        {
+            return this.list.Count;
+        }
     }
 }
