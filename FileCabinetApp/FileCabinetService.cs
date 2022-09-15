@@ -1,3 +1,5 @@
+using System.Net;
+
 public class FileCabinetService
 {
     private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
@@ -19,8 +21,7 @@ public class FileCabinetService
 
     public FileCabinetRecord[] GetRecords()
     {
-        // TODO: добавьте реализацию метода
-        return Array.Empty<FileCabinetRecord>();
+        return this.list.ToArray();
     }
 
     public int GetStat()

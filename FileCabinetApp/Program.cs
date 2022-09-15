@@ -1,4 +1,6 @@
-﻿namespace FileCabinetApp
+﻿using System.Globalization;
+
+namespace FileCabinetApp
 {
     public static class Program
     {
@@ -18,14 +20,16 @@
             new Tuple<string, Action<string>>("exit", Exit),
             new Tuple<string, Action<string>>("stat", Stat),
             new Tuple<string, Action<string>>("create", Create),
+            new Tuple<string, Action<string>>("list", List),
         };
 
         private static string[][] helpMessages = new string[][]
         {
             new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
-            new string[] { "stat", "prints note stats", "The 'stat' command prints note stats" },
-            new string[] { "create", "creates a new note", "The 'create' command creates a new note" },
+            new string[] { "stat", "prints records amount", "The 'stat' command prints amount of records" },
+            new string[] { "create", "creates a new record", "The 'create' command creates a new note" },
+            new string[] { "create", "lists all records", "The 'list' command lists all records" },
         };
 
         public static void Main(string[] args)
@@ -100,6 +104,15 @@
         {
             var recordsCount = Program.fileCabinetService.GetStat();
             Console.WriteLine($"{recordsCount} record(s).");
+        }
+
+        private static void List(string parameters)
+        {
+            var array = fileCabinetService.GetRecords();
+            for (int i = 0; i < fileCabinetService.GetStat(); i++)
+            {
+                Console.WriteLine("#{0}, {1}, {2}, {3}", i + 1, array[i].FirstName, array[i].LastName, array[i].DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture));
+            }
         }
 
         private static void Create(string parameters)
