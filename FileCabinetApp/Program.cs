@@ -180,10 +180,20 @@ namespace FileCabinetApp
             int month = int.Parse(splitedInput[0], CultureInfo.InvariantCulture);
             int day = int.Parse(splitedInput[1], CultureInfo.InvariantCulture);
             int year = int.Parse(splitedInput[2], CultureInfo.InvariantCulture);
+            DateTime date = new DateTime(year, month, day);
+            try
+            {
+                fileCabinetService.CreateRecord(firstName, lastName, sexString[0], weight, height, date);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("Record was not created. Try again.");
+                Create(parameters);
+                return;
+            }
 
             Console.WriteLine($"Record #{fileCabinetService.GetStat() + 1} is created");
-            DateTime date = new DateTime(year, month, day);
-            fileCabinetService.CreateRecord(firstName, lastName, sexString[0], weight, height, date);
         }
 
         private static void Exit(string parameters)
