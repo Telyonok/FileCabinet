@@ -6,12 +6,7 @@
 
         public int CreateRecord(string firstName, string lastName, char sex, short weight, decimal height, DateTime dateOfBirth)
         {
-            ValidateNameString(firstName);
-            ValidateNameString(lastName);
-            ValidateDateTime(dateOfBirth);
-            ValidateSex(sex);
-            ValidateWeight(weight);
-            ValidateHeight(height);
+            ValidateInput(firstName, lastName, sex, weight, height, dateOfBirth);
 
             var record = new FileCabinetRecord
             {
@@ -27,6 +22,17 @@
             this.list.Add(record);
 
             return record.Id;
+        }
+
+        public void EditRecord(int id, string firstName, string lastName, char sex, short weight, decimal height, DateTime dateOfBirth)
+        {
+            ValidateInput(firstName, lastName, sex, weight, height, dateOfBirth);
+            this.list[id - 1].FirstName = firstName;
+            this.list[id - 1].LastName = lastName;
+            this.list[id - 1].Sex = sex;
+            this.list[id - 1].Weight = weight;
+            this.list[id - 1].Height = height;
+            this.list[id - 1].DateOfBirth = dateOfBirth;
         }
 
         public FileCabinetRecord[] GetRecords()
@@ -83,6 +89,16 @@
             {
                 throw new ArgumentException("Height must be from 0 to 300");
             }
+        }
+
+        private static void ValidateInput(string firstName, string lastName, char sex, short weight, decimal height, DateTime dateOfBirth)
+        {
+            ValidateNameString(firstName);
+            ValidateNameString(lastName);
+            ValidateDateTime(dateOfBirth);
+            ValidateSex(sex);
+            ValidateWeight(weight);
+            ValidateHeight(height);
         }
     }
 }

@@ -21,6 +21,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("stat", Stat),
             new Tuple<string, Action<string>>("create", Create),
             new Tuple<string, Action<string>>("list", List),
+            new Tuple<string, Action<string>>("edit", Edit),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -30,6 +31,7 @@ namespace FileCabinetApp
             new string[] { "stat", "prints records amount", "The 'stat' command prints amount of records" },
             new string[] { "create", "creates a new record", "The 'create' command creates a new note" },
             new string[] { "list", "lists all records", "The 'list' command lists all records" },
+            new string[] { "edit", "edits a chosen record", "The 'edit <id>' command edits a record with corresponding Id" },
         };
 
         public static void Main(string[] args)
@@ -116,13 +118,15 @@ namespace FileCabinetApp
             }
         }
 
-        private static void Create(string parameters)
+        private static void GetPlayerInputAndRecord(InputMode mode, int value = 0)
         {
+            Console.WriteLine();
             Console.Write("First name: ");
             string? firstName = Console.ReadLine();
             if (string.IsNullOrEmpty(firstName))
             {
                 Console.WriteLine("First Name can not be empty");
+                GetPlayerInputAndRecord(mode);
                 return;
             }
 
@@ -131,6 +135,7 @@ namespace FileCabinetApp
             if (string.IsNullOrEmpty(lastName))
             {
                 Console.WriteLine("Last Name can not be empty");
+                GetPlayerInputAndRecord(mode);
                 return;
             }
 
@@ -139,6 +144,7 @@ namespace FileCabinetApp
             if (string.IsNullOrEmpty(sexString))
             {
                 Console.WriteLine("Sex can not be empty");
+                GetPlayerInputAndRecord(mode);
                 return;
             }
 
@@ -147,6 +153,7 @@ namespace FileCabinetApp
             if (string.IsNullOrEmpty(weightString))
             {
                 Console.WriteLine("Weight can not be empty");
+                GetPlayerInputAndRecord(mode);
                 return;
             }
 
@@ -157,6 +164,7 @@ namespace FileCabinetApp
             if (string.IsNullOrEmpty(heightString))
             {
                 Console.WriteLine("Height can not be empty");
+                GetPlayerInputAndRecord(mode);
                 return;
             }
 
@@ -167,6 +175,7 @@ namespace FileCabinetApp
             if (string.IsNullOrEmpty(input))
             {
                 Console.WriteLine("Date can not be empty");
+                GetPlayerInputAndRecord(mode);
                 return;
             }
 
@@ -174,6 +183,7 @@ namespace FileCabinetApp
             if (splitedInput.Length != 3)
             {
                 Console.WriteLine("Date is incorrect");
+                GetPlayerInputAndRecord(mode);
                 return;
             }
 
@@ -183,23 +193,65 @@ namespace FileCabinetApp
             DateTime date = new DateTime(year, month, day);
             try
             {
-                fileCabinetService.CreateRecord(firstName, lastName, sexString[0], weight, height, date);
+                if (mode == InputMode.Create)
+                {
+                    fileCabinetService.CreateRecord(firstName, lastName, sexString[0], weight, height, date);
+                }
+                else
+                {
+                    fileCabinetService.EditRecord(value, firstName, lastName, sexString[0], weight, height, date);
+                }
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                Console.WriteLine("Record was not created. Try again.");
-                Create(parameters);
+                Console.WriteLine("Your input was not recorded. Try again.");
+                GetPlayerInputAndRecord(mode);
                 return;
             }
 
-            Console.WriteLine($"Record #{fileCabinetService.GetStat() + 1} is created");
+            if (mode == InputMode.Create)
+            {
+                Console.WriteLine($"Record #{fileCabinetService.GetStat() + 1} is created");
+            }
+            else
+            {
+                Console.WriteLine($"Record #{value} is updated");
+            }
+        }
+
+        private static void Create(string parameters)
+        {
+            GetPlayerInputAndRecord(InputMode.Create);
         }
 
         private static void Exit(string parameters)
         {
             Console.WriteLine("Exiting an application...");
             isRunning = false;
+        }
+
+        private static void Edit(string parameters)
+        {
+            if (string.IsNullOrEmpty(parameters))
+            {
+                Console.WriteLine("'Edit' command had no parameters");
+                return;
+            }
+
+            if (!int.TryParse(parameters, out int value))
+            {
+                Console.WriteLine("Parameter should be a number");
+                return;
+            }
+
+            if (fileCabinetService.GetStat() < value || value < 1)
+            {
+                Console.WriteLine($"#{value} record is not found.");
+                return;
+            }
+
+            GetPlayerInputAndRecord(InputMode.Edit, value);
         }
     }
 }
