@@ -8,6 +8,7 @@ namespace FileCabinetApp
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
+        private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
 
         public int CreateRecord(string firstName, string lastName, char sex, short weight, decimal height, DateTime dateOfBirth)
         {
@@ -48,6 +49,7 @@ namespace FileCabinetApp
 
             this.firstNameDictionary[oldFirstName].Remove(this.list[id - 1]);
             this.firstNameDictionary[oldLastName].Remove(this.list[id - 1]);
+            this.dateOfBirthDictionary[dateOfBirth].Remove(this.list[id - 1]);
 
             this.list[id - 1].FirstName = firstName;
             this.list[id - 1].LastName = lastName;
@@ -71,20 +73,32 @@ namespace FileCabinetApp
 
         public FileCabinetRecord[] FindByFirstName(string firstName)
         {
+            if (!this.firstNameDictionary.ContainsKey(firstName))
+            {
+                return Array.Empty<FileCabinetRecord>();
+            }
+
             return this.firstNameDictionary[firstName].ToArray();
         }
 
         public FileCabinetRecord[] FindByLastName(string lastName)
         {
+            if (!this.lastNameDictionary.ContainsKey(lastName))
+            {
+                return Array.Empty<FileCabinetRecord>();
+            }
+
             return this.lastNameDictionary[lastName].ToArray();
         }
 
         public FileCabinetRecord[] FindByDateOfBirth(DateTime dateTime)
         {
-            var records = from rec in this.list
-                          where dateTime.CompareTo(rec.DateOfBirth) == 0
-                          select rec;
-            return records.ToArray();
+            if (!this.dateOfBirthDictionary.ContainsKey(dateTime))
+            {
+                return Array.Empty<FileCabinetRecord>();
+            }
+
+            return this.dateOfBirthDictionary[dateTime].ToArray();
         }
 
         private static void ValidateNameString(string name)
@@ -153,13 +167,19 @@ namespace FileCabinetApp
                 this.firstNameDictionary.Add(firstName, new List<FileCabinetRecord>());
             }
 
-            if (!this.firstNameDictionary.ContainsKey(lastName))
+            if (!this.lastNameDictionary.ContainsKey(lastName))
             {
                 this.lastNameDictionary.Add(lastName, new List<FileCabinetRecord>());
             }
 
+            if (!this.dateOfBirthDictionary.ContainsKey(dateOfBirth))
+            {
+                this.dateOfBirthDictionary.Add(dateOfBirth, new List<FileCabinetRecord>());
+            }
+
             this.firstNameDictionary[firstName].Add(this.list[id - 1]);
             this.lastNameDictionary[lastName].Add(this.list[id - 1]);
+            this.dateOfBirthDictionary[dateOfBirth].Add(this.list[id - 1]);
         }
     }
 }

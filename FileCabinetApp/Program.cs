@@ -287,7 +287,12 @@ namespace FileCabinetApp
                     ListRecordArray(fileCabinetService.FindByLastName(splittedString[1]));
                     break;
                 case "dateofbirth":
-                    ListRecordArray(fileCabinetService.FindByDateOfBirth(DateTime.Parse(splittedString[1], CultureInfo.InvariantCulture)));
+                    if (!DateTime.TryParse(splittedString[1], out DateTime date))
+                    {
+                        Console.WriteLine("Incorrect date value");
+                    }
+
+                    ListRecordArray(fileCabinetService.FindByDateOfBirth(date));
                     break;
                 default:
                     Console.WriteLine("Incorrect parameter");
