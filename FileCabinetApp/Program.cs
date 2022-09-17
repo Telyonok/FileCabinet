@@ -22,6 +22,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("create", Create),
             new Tuple<string, Action<string>>("list", List),
             new Tuple<string, Action<string>>("edit", Edit),
+            new Tuple<string, Action<string>>("find", Find),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -32,6 +33,7 @@ namespace FileCabinetApp
             new string[] { "create", "creates a new record", "The 'create' command creates a new note" },
             new string[] { "list", "lists all records", "The 'list' command lists all records" },
             new string[] { "edit", "edits a chosen record", "The 'edit <id>' command edits a record with corresponding Id" },
+            new string[] { "find", "finds all records with given parameter value", "The 'find <parameter> \"<value>\"' command finds all records with corresponding value" },
         };
 
         public static void Main(string[] args)
@@ -110,10 +112,14 @@ namespace FileCabinetApp
 
         private static void List(string parameters)
         {
-            var array = fileCabinetService.GetRecords();
-            for (int i = 0; i < fileCabinetService.GetStat(); i++)
+            ListRecordArray(fileCabinetService.GetRecords());
+        }
+
+        private static void ListRecordArray(FileCabinetRecord[] records)
+        {
+            for (int i = 0; i < records.Length; i++)
             {
-                var item = array[i];
+                var item = records[i];
                 Console.WriteLine("#{0}, {1}, {2}, sex: {3}, weight: {4}, height: {5}, {6}", i + 1, item.FirstName, item.LastName, item.Sex, item.Weight, item.Height, item.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture));
             }
         }
@@ -252,6 +258,46 @@ namespace FileCabinetApp
             }
 
             GetPlayerInputAndRecord(InputMode.Edit, value);
+        }
+
+        private static void Find(string parameters)
+        {
+            parameters = parameters.ToLower(CultureInfo.InvariantCulture);
+            string[] splittedString = parameters.Split(' ');
+            if (splittedString.Length != 2)
+            {
+                Console.WriteLine("'Find' command should have 2 parameters");
+                return;
+            }
+
+            if (splittedString[1][0] != '\"' || splittedString[1][splittedString[1].Length - 1] != '\"')
+            {
+                Console.WriteLine("Quotation marks should not be omitted");
+                return;
+            }
+
+            splittedString[1] = splittedString[1].Substring(1, splittedString[1].Length - 2).ToLower(CultureInfo.InvariantCulture);
+
+            switch (splittedString[0])
+            {
+                case "firstname":
+                    ListRecordArray(fileCabinetService.FindByFirstName(splittedString[1]));
+                    break;
+                case "lastname":
+                    ListRecordArray(fileCabinetService.FindByLastName(splittedString[1]));
+                    break;
+                case "dateofbirth":
+                    if (!DateTime.TryParse(splittedString[1], out DateTime date))
+                    {
+                        Console.WriteLine("Incorrect date value");
+                    }
+
+                    ListRecordArray(fileCabinetService.FindByDateOfBirth(date));
+                    break;
+                default:
+                    Console.WriteLine("Incorrect parameter");
+                    return;
+            }
         }
     }
 }
