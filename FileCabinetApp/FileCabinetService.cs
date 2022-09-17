@@ -45,6 +45,14 @@
             return this.list.Count;
         }
 
+        public FileCabinetRecord[] FindByFirstName(string firstName)
+        {
+            var records = from rec in this.list
+                          where string.Equals(rec.FirstName, firstName, StringComparison.OrdinalIgnoreCase)
+                          select rec;
+            return records.ToArray();
+        }
+
         private static void ValidateNameString(string name)
         {
             if (name is null)
