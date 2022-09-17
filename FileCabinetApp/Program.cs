@@ -276,7 +276,7 @@ namespace FileCabinetApp
                 return;
             }
 
-            splittedString[1] = splittedString[1].Substring(1, splittedString[1].Length - 2);
+            splittedString[1] = splittedString[1].Substring(1, splittedString[1].Length - 2).ToLower(CultureInfo.InvariantCulture);
 
             switch (splittedString[0])
             {
