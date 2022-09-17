@@ -53,6 +53,22 @@
             return records.ToArray();
         }
 
+        public FileCabinetRecord[] FindByLastName(string lastName)
+        {
+            var records = from rec in this.list
+                          where string.Equals(rec.LastName, lastName, StringComparison.OrdinalIgnoreCase)
+                          select rec;
+            return records.ToArray();
+        }
+
+        public FileCabinetRecord[] FindByDateOfBirth(DateTime dateTime)
+        {
+            var records = from rec in this.list
+                          where dateTime.CompareTo(rec.DateOfBirth) == 0
+                          select rec;
+            return records.ToArray();
+        }
+
         private static void ValidateNameString(string name)
         {
             if (name is null)

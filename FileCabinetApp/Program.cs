@@ -276,17 +276,23 @@ namespace FileCabinetApp
                 return;
             }
 
+            splittedString[1] = splittedString[1].Substring(1, splittedString[1].Length - 2);
+
             switch (splittedString[0])
             {
                 case "firstname":
-                    fileCabinetService.FindByFirstName(splittedString[1]);
+                    ListRecordArray(fileCabinetService.FindByFirstName(splittedString[1]));
+                    break;
+                case "lastname":
+                    ListRecordArray(fileCabinetService.FindByLastName(splittedString[1]));
+                    break;
+                case "dateofbirth":
+                    ListRecordArray(fileCabinetService.FindByDateOfBirth(DateTime.Parse(splittedString[1], CultureInfo.InvariantCulture)));
                     break;
                 default:
                     Console.WriteLine("Incorrect parameter");
                     return;
             }
-
-            ListRecordArray(fileCabinetService.FindByFirstName(splittedString[1].Substring(1, splittedString[1].Length - 2)));
         }
     }
 }
