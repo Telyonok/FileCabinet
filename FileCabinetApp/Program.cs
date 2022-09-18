@@ -1,7 +1,12 @@
 ﻿using System.Globalization;
 
+[assembly: CLSCompliant(true)]
+
 namespace FileCabinetApp
 {
+    /// <summary>
+    /// Class <c>Program</c> provides interface and is controlled via commands by user.
+    /// </summary>
     public static class Program
     {
         private const string DeveloperName = "Ilya Chvilyov";
@@ -36,7 +41,10 @@ namespace FileCabinetApp
             new string[] { "find", "finds all records with given parameter value", "The 'find <parameter> \"<value>\"' command finds all records with corresponding value" },
         };
 
-        public static void Main(string[] args)
+        /// <summary>
+        /// Accepts input and calls corresponding methods.
+        /// </summary>
+        public static void Main()
         {
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
             Console.WriteLine(Program.HintMessage);

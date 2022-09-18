@@ -3,6 +3,10 @@ using System.Globalization;
 
 namespace FileCabinetApp
 {
+    /// <summary>
+    /// Class <c>FileCabinetService</c> provides methods for creating, editting, listing,
+    /// finding and validating records.
+    /// </summary>
     public class FileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
@@ -10,6 +14,16 @@ namespace FileCabinetApp
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
 
+        /// <summary>
+        /// Creates a new record after validating user input and returns it id.
+        /// </summary>
+        /// <param name="firstName">Person's first name.</param>
+        /// <param name="lastName">Person's last name.</param>
+        /// <param name="sex">Person's sex.</param>
+        /// <param name="weight">Person's weight.</param>
+        /// <param name="height">Persons's height.</param>
+        /// <param name="dateOfBirth">Person's date of birth.</param>
+        /// <returns> Record's id. </returns>
         public int CreateRecord(string firstName, string lastName, char sex, short weight, decimal height, DateTime dateOfBirth)
         {
             ValidateInput(firstName, lastName, sex, weight, height, dateOfBirth);
@@ -31,6 +45,16 @@ namespace FileCabinetApp
             return record.Id;
         }
 
+        /// <summary>
+        /// Edits a record after validating new input.
+        /// </summary>
+        /// <param name="id">Record's id.</param>
+        /// <param name="firstName">New first name.</param>
+        /// <param name="lastName">New last name.</param>
+        /// <param name="sex">New sex.</param>
+        /// <param name="weight">New weight.</param>
+        /// <param name="height">New height.</param>
+        /// <param name="dateOfBirth">New date of birth.</param>
         public void EditRecord(int id, string firstName, string lastName, char sex, short weight, decimal height, DateTime dateOfBirth)
         {
             ValidateInput(firstName, lastName, sex, weight, height, dateOfBirth);
@@ -61,16 +85,29 @@ namespace FileCabinetApp
             this.UpdateDictionaries(firstName, lastName, dateOfBirth, id);
         }
 
+        /// <summary>
+        /// Gets an array with all records from the <c>list</c>.
+        /// </summary>
+        /// <returns> Array with all records. </returns>
         public FileCabinetRecord[] GetRecords()
         {
             return this.list.ToArray();
         }
 
+        /// <summary>
+        /// Returns the amount of created records.
+        /// </summary>
+        /// <returns> Count of elements in <c>list</c>. </returns>
         public int GetStat()
         {
             return this.list.Count;
         }
 
+        /// <summary>
+        /// Returns all records with their first name equal to <c>firstName</c>.
+        /// </summary>
+        /// <param name="firstName">Name to search by.</param>
+        /// <returns> Array of all records with corresponding first name. </returns>
         public FileCabinetRecord[] FindByFirstName(string firstName)
         {
             if (!this.firstNameDictionary.ContainsKey(firstName))
@@ -81,6 +118,11 @@ namespace FileCabinetApp
             return this.firstNameDictionary[firstName].ToArray();
         }
 
+        /// <summary>
+        /// Returns all records with their last name equal to <c>lastName</c>.
+        /// </summary>
+        /// <param name="lastName">Name to search by.</param>
+        /// <returns> Array of all records with corresponding last name. </returns>
         public FileCabinetRecord[] FindByLastName(string lastName)
         {
             if (!this.lastNameDictionary.ContainsKey(lastName))
@@ -91,14 +133,19 @@ namespace FileCabinetApp
             return this.lastNameDictionary[lastName].ToArray();
         }
 
-        public FileCabinetRecord[] FindByDateOfBirth(DateTime dateTime)
+        /// <summary>
+        /// Returns all records with their date of birth equal to <c>dateOfBirth</c>.
+        /// </summary>
+        /// <param name="dateOfBirth">Date to search by.</param>
+        /// <returns> Array of all records with corresponding date of birth. </returns>
+        public FileCabinetRecord[] FindByDateOfBirth(DateTime dateOfBirth)
         {
-            if (!this.dateOfBirthDictionary.ContainsKey(dateTime))
+            if (!this.dateOfBirthDictionary.ContainsKey(dateOfBirth))
             {
                 return Array.Empty<FileCabinetRecord>();
             }
 
-            return this.dateOfBirthDictionary[dateTime].ToArray();
+            return this.dateOfBirthDictionary[dateOfBirth].ToArray();
         }
 
         private static void ValidateNameString(string name)
