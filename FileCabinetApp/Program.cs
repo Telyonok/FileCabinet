@@ -289,28 +289,30 @@ namespace FileCabinetApp
             int day = int.Parse(splitedInput[1], CultureInfo.InvariantCulture);
             int year = int.Parse(splitedInput[2], CultureInfo.InvariantCulture);
             DateTime date = new DateTime(year, month, day);
+            UnvalidatedRecordData unvalidatedRecord = new UnvalidatedRecordData(firstName, lastName, sexString[0], weight, height, date);
+
             try
             {
                 if (mode == InputMode.Create)
                 {
-                    fileCabinetService.CreateRecord(firstName, lastName, sexString[0], weight, height, date);
+                    fileCabinetService.CreateRecord(unvalidatedRecord);
                 }
                 else
                 {
-                    fileCabinetService.EditRecord(value, firstName, lastName, sexString[0], weight, height, date);
+                    fileCabinetService.EditRecord(value, unvalidatedRecord);
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 Console.WriteLine("Your input was not recorded. Try again.");
-                GetUserInputAndRecord(mode);
+                GetUserInputAndRecord(mode, value);
                 return;
             }
 
             if (mode == InputMode.Create)
             {
-                Console.WriteLine($"Record #{fileCabinetService.GetStat() + 1} is created");
+                Console.WriteLine($"Record #{fileCabinetService.GetStat()} is created");
             }
             else
             {

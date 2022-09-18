@@ -17,30 +17,25 @@ namespace FileCabinetApp
         /// <summary>
         /// Creates a new record after validating user input and returns it id.
         /// </summary>
-        /// <param name="firstName">Person's first name.</param>
-        /// <param name="lastName">Person's last name.</param>
-        /// <param name="sex">Person's sex.</param>
-        /// <param name="weight">Person's weight.</param>
-        /// <param name="height">Persons's height.</param>
-        /// <param name="dateOfBirth">Person's date of birth.</param>
+        /// <param name="unvalidatedRecord">Record data that needs to be validated.</param>
         /// <returns> Record's id. </returns>
-        public int CreateRecord(string firstName, string lastName, char sex, short weight, decimal height, DateTime dateOfBirth)
+        public int CreateRecord(UnvalidatedRecordData unvalidatedRecord)
         {
-            ValidateInput(firstName, lastName, sex, weight, height, dateOfBirth);
+            ValidateInput(unvalidatedRecord);
 
             var record = new FileCabinetRecord
             {
                 Id = this.list.Count + 1,
-                FirstName = firstName,
-                LastName = lastName,
-                Sex = sex,
-                Weight = weight,
-                Height = height,
-                DateOfBirth = dateOfBirth,
+                FirstName = unvalidatedRecord.FirstName,
+                LastName = unvalidatedRecord.LastName,
+                Sex = unvalidatedRecord.Sex,
+                Weight = unvalidatedRecord.Weight,
+                Height = unvalidatedRecord.Height,
+                DateOfBirth = unvalidatedRecord.DateOfBirth,
             };
 
             this.list.Add(record);
-            this.UpdateDictionaries(firstName, lastName, dateOfBirth, record.Id);
+            this.UpdateDictionaries(unvalidatedRecord, record.Id);
 
             return record.Id;
         }
@@ -49,17 +44,13 @@ namespace FileCabinetApp
         /// Edits a record after validating new input.
         /// </summary>
         /// <param name="id">Record's id.</param>
-        /// <param name="firstName">New first name.</param>
-        /// <param name="lastName">New last name.</param>
-        /// <param name="sex">New sex.</param>
-        /// <param name="weight">New weight.</param>
-        /// <param name="height">New height.</param>
-        /// <param name="dateOfBirth">New date of birth.</param>
-        public void EditRecord(int id, string firstName, string lastName, char sex, short weight, decimal height, DateTime dateOfBirth)
+        /// <param name="unvalidatedRecord">Record data that needs to be validated.</param>
+        public void EditRecord(int id, UnvalidatedRecordData unvalidatedRecord)
         {
-            ValidateInput(firstName, lastName, sex, weight, height, dateOfBirth);
+            ValidateInput(unvalidatedRecord);
             string? oldFirstName = this.list[id - 1].FirstName;
             string? oldLastName = this.list[id - 1].LastName;
+            DateTime oldDateOfBirth = this.list[id - 1].DateOfBirth;
 
             if (oldFirstName is null)
             {
@@ -72,17 +63,17 @@ namespace FileCabinetApp
             }
 
             this.firstNameDictionary[oldFirstName].Remove(this.list[id - 1]);
-            this.firstNameDictionary[oldLastName].Remove(this.list[id - 1]);
-            this.dateOfBirthDictionary[dateOfBirth].Remove(this.list[id - 1]);
+            this.lastNameDictionary[oldLastName].Remove(this.list[id - 1]);
+            this.dateOfBirthDictionary[oldDateOfBirth].Remove(this.list[id - 1]);
 
-            this.list[id - 1].FirstName = firstName;
-            this.list[id - 1].LastName = lastName;
-            this.list[id - 1].Sex = sex;
-            this.list[id - 1].Weight = weight;
-            this.list[id - 1].Height = height;
-            this.list[id - 1].DateOfBirth = dateOfBirth;
+            this.list[id - 1].FirstName = unvalidatedRecord.FirstName;
+            this.list[id - 1].LastName = unvalidatedRecord.LastName;
+            this.list[id - 1].Sex = unvalidatedRecord.Sex;
+            this.list[id - 1].Weight = unvalidatedRecord.Weight;
+            this.list[id - 1].Height = unvalidatedRecord.Height;
+            this.list[id - 1].DateOfBirth = unvalidatedRecord.DateOfBirth;
 
-            this.UpdateDictionaries(firstName, lastName, dateOfBirth, id);
+            this.UpdateDictionaries(unvalidatedRecord, id);
         }
 
         /// <summary>
@@ -194,39 +185,39 @@ namespace FileCabinetApp
             }
         }
 
-        private static void ValidateInput(string firstName, string lastName, char sex, short weight, decimal height, DateTime dateOfBirth)
+        private static void ValidateInput(UnvalidatedRecordData unvalidatedRecord)
         {
-            ValidateNameString(firstName);
-            ValidateNameString(lastName);
-            ValidateDateTime(dateOfBirth);
-            ValidateSex(sex);
-            ValidateWeight(weight);
-            ValidateHeight(height);
+            ValidateNameString(unvalidatedRecord.FirstName);
+            ValidateNameString(unvalidatedRecord.LastName);
+            ValidateDateTime(unvalidatedRecord.DateOfBirth);
+            ValidateSex(unvalidatedRecord.Sex);
+            ValidateWeight(unvalidatedRecord.Weight);
+            ValidateHeight(unvalidatedRecord.Height);
         }
 
-        private void UpdateDictionaries(string firstName, string lastName, DateTime dateOfBirth, int id)
+        private void UpdateDictionaries(UnvalidatedRecordData unvalidatedRecord, int id)
         {
-            firstName = firstName.ToLower(CultureInfo.InvariantCulture);
-            lastName = lastName.ToLower(CultureInfo.InvariantCulture);
+            unvalidatedRecord.FirstName = unvalidatedRecord.FirstName.ToLower(CultureInfo.InvariantCulture);
+            unvalidatedRecord.LastName = unvalidatedRecord.LastName.ToLower(CultureInfo.InvariantCulture);
 
-            if (!this.firstNameDictionary.ContainsKey(firstName))
+            if (!this.firstNameDictionary.ContainsKey(unvalidatedRecord.FirstName))
             {
-                this.firstNameDictionary.Add(firstName, new List<FileCabinetRecord>());
+                this.firstNameDictionary.Add(unvalidatedRecord.FirstName, new List<FileCabinetRecord>());
             }
 
-            if (!this.lastNameDictionary.ContainsKey(lastName))
+            if (!this.lastNameDictionary.ContainsKey(unvalidatedRecord.LastName))
             {
-                this.lastNameDictionary.Add(lastName, new List<FileCabinetRecord>());
+                this.lastNameDictionary.Add(unvalidatedRecord.LastName, new List<FileCabinetRecord>());
             }
 
-            if (!this.dateOfBirthDictionary.ContainsKey(dateOfBirth))
+            if (!this.dateOfBirthDictionary.ContainsKey(unvalidatedRecord.DateOfBirth))
             {
-                this.dateOfBirthDictionary.Add(dateOfBirth, new List<FileCabinetRecord>());
+                this.dateOfBirthDictionary.Add(unvalidatedRecord.DateOfBirth, new List<FileCabinetRecord>());
             }
 
-            this.firstNameDictionary[firstName].Add(this.list[id - 1]);
-            this.lastNameDictionary[lastName].Add(this.list[id - 1]);
-            this.dateOfBirthDictionary[dateOfBirth].Add(this.list[id - 1]);
+            this.firstNameDictionary[unvalidatedRecord.FirstName].Add(this.list[id - 1]);
+            this.lastNameDictionary[unvalidatedRecord.LastName].Add(this.list[id - 1]);
+            this.dateOfBirthDictionary[unvalidatedRecord.DateOfBirth].Add(this.list[id - 1]);
         }
     }
 }
