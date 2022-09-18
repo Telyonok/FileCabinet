@@ -104,137 +104,26 @@ namespace FileCabinetApp
             Console.WriteLine();
         }
 
+        private static void Exit(string parameters)
+        {
+            Console.WriteLine("Exiting an application...");
+            isRunning = false;
+        }
+
         private static void Stat(string parameters)
         {
             var recordsCount = Program.fileCabinetService.GetStat();
             Console.WriteLine($"{recordsCount} record(s).");
         }
 
+        private static void Create(string parameters)
+        {
+            GetUserInputAndRecord(InputMode.Create);
+        }
+
         private static void List(string parameters)
         {
             ListRecordArray(fileCabinetService.GetRecords());
-        }
-
-        private static void ListRecordArray(FileCabinetRecord[] records)
-        {
-            for (int i = 0; i < records.Length; i++)
-            {
-                var item = records[i];
-                Console.WriteLine("#{0}, {1}, {2}, sex: {3}, weight: {4}, height: {5}, {6}", i + 1, item.FirstName, item.LastName, item.Sex, item.Weight, item.Height, item.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture));
-            }
-        }
-
-        private static void GetPlayerInputAndRecord(InputMode mode, int value = 0)
-        {
-            Console.WriteLine();
-            Console.Write("First name: ");
-            string? firstName = Console.ReadLine();
-            if (string.IsNullOrEmpty(firstName))
-            {
-                Console.WriteLine("First Name can not be empty");
-                GetPlayerInputAndRecord(mode);
-                return;
-            }
-
-            Console.Write("Last name: ");
-            string? lastName = Console.ReadLine();
-            if (string.IsNullOrEmpty(lastName))
-            {
-                Console.WriteLine("Last Name can not be empty");
-                GetPlayerInputAndRecord(mode);
-                return;
-            }
-
-            Console.Write("Sex: ");
-            string? sexString = Console.ReadLine();
-            if (string.IsNullOrEmpty(sexString))
-            {
-                Console.WriteLine("Sex can not be empty");
-                GetPlayerInputAndRecord(mode);
-                return;
-            }
-
-            Console.Write("Weight: ");
-            string? weightString = Console.ReadLine();
-            if (string.IsNullOrEmpty(weightString))
-            {
-                Console.WriteLine("Weight can not be empty");
-                GetPlayerInputAndRecord(mode);
-                return;
-            }
-
-            short weight = short.Parse(weightString, CultureInfo.InvariantCulture);
-
-            Console.Write("Height: ");
-            string? heightString = Console.ReadLine();
-            if (string.IsNullOrEmpty(heightString))
-            {
-                Console.WriteLine("Height can not be empty");
-                GetPlayerInputAndRecord(mode);
-                return;
-            }
-
-            decimal height = decimal.Parse(heightString, CultureInfo.InvariantCulture);
-
-            Console.Write("Date of birth: ");
-            string? input = Console.ReadLine();
-            if (string.IsNullOrEmpty(input))
-            {
-                Console.WriteLine("Date can not be empty");
-                GetPlayerInputAndRecord(mode);
-                return;
-            }
-
-            string[] splitedInput = input.Split('/');
-            if (splitedInput.Length != 3)
-            {
-                Console.WriteLine("Date is incorrect");
-                GetPlayerInputAndRecord(mode);
-                return;
-            }
-
-            int month = int.Parse(splitedInput[0], CultureInfo.InvariantCulture);
-            int day = int.Parse(splitedInput[1], CultureInfo.InvariantCulture);
-            int year = int.Parse(splitedInput[2], CultureInfo.InvariantCulture);
-            DateTime date = new DateTime(year, month, day);
-            try
-            {
-                if (mode == InputMode.Create)
-                {
-                    fileCabinetService.CreateRecord(firstName, lastName, sexString[0], weight, height, date);
-                }
-                else
-                {
-                    fileCabinetService.EditRecord(value, firstName, lastName, sexString[0], weight, height, date);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine("Your input was not recorded. Try again.");
-                GetPlayerInputAndRecord(mode);
-                return;
-            }
-
-            if (mode == InputMode.Create)
-            {
-                Console.WriteLine($"Record #{fileCabinetService.GetStat() + 1} is created");
-            }
-            else
-            {
-                Console.WriteLine($"Record #{value} is updated");
-            }
-        }
-
-        private static void Create(string parameters)
-        {
-            GetPlayerInputAndRecord(InputMode.Create);
-        }
-
-        private static void Exit(string parameters)
-        {
-            Console.WriteLine("Exiting an application...");
-            isRunning = false;
         }
 
         private static void Edit(string parameters)
@@ -257,7 +146,7 @@ namespace FileCabinetApp
                 return;
             }
 
-            GetPlayerInputAndRecord(InputMode.Edit, value);
+            GetUserInputAndRecord(InputMode.Edit, value);
         }
 
         private static void Find(string parameters)
@@ -297,6 +186,127 @@ namespace FileCabinetApp
                 default:
                     Console.WriteLine("Incorrect parameter");
                     return;
+            }
+        }
+
+        private static void ListRecordArray(FileCabinetRecord[] records)
+        {
+            for (int i = 0; i < records.Length; i++)
+            {
+                var item = records[i];
+                Console.WriteLine("#{0}, {1}, {2}, sex: {3}, weight: {4}, height: {5}, {6}", i + 1, item.FirstName, item.LastName, item.Sex, item.Weight, item.Height, item.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture));
+            }
+        }
+
+        private static void GetUserInputAndRecord(InputMode mode, int value = 0)
+        {
+            Console.WriteLine();
+            Console.Write("First name: ");
+            string? firstName = Console.ReadLine();
+            if (string.IsNullOrEmpty(firstName))
+            {
+                Console.WriteLine("First Name can not be empty");
+                GetUserInputAndRecord(mode);
+                return;
+            }
+
+            Console.Write("Last name: ");
+            string? lastName = Console.ReadLine();
+            if (string.IsNullOrEmpty(lastName))
+            {
+                Console.WriteLine("Last Name can not be empty");
+                GetUserInputAndRecord(mode);
+                return;
+            }
+
+            Console.Write("Sex: ");
+            string? sexString = Console.ReadLine();
+            if (string.IsNullOrEmpty(sexString))
+            {
+                Console.WriteLine("Sex can not be empty");
+                GetUserInputAndRecord(mode);
+                return;
+            }
+
+            Console.Write("Weight: ");
+            string? weightString = Console.ReadLine();
+            if (string.IsNullOrEmpty(weightString))
+            {
+                Console.WriteLine("Weight can not be empty.");
+                GetUserInputAndRecord(mode);
+                return;
+            }
+
+            if (!short.TryParse(weightString, out short weight))
+            {
+                Console.WriteLine("Weight value was invalid.");
+                GetUserInputAndRecord(mode);
+                return;
+            }
+
+            Console.Write("Height: ");
+            string? heightString = Console.ReadLine();
+            if (string.IsNullOrEmpty(heightString))
+            {
+                Console.WriteLine("Height can not be empty");
+                GetUserInputAndRecord(mode);
+                return;
+            }
+
+            if (!decimal.TryParse(heightString, out decimal height))
+            {
+                Console.WriteLine("Height value was invalid.");
+                GetUserInputAndRecord(mode);
+                return;
+            }
+
+            Console.Write("Date of birth: ");
+            string? input = Console.ReadLine();
+            if (string.IsNullOrEmpty(input))
+            {
+                Console.WriteLine("Date can not be empty");
+                GetUserInputAndRecord(mode);
+                return;
+            }
+
+            string[] splitedInput = input.Split('/');
+            if (splitedInput.Length != 3)
+            {
+                Console.WriteLine("Date is incorrect");
+                GetUserInputAndRecord(mode);
+                return;
+            }
+
+            int month = int.Parse(splitedInput[0], CultureInfo.InvariantCulture);
+            int day = int.Parse(splitedInput[1], CultureInfo.InvariantCulture);
+            int year = int.Parse(splitedInput[2], CultureInfo.InvariantCulture);
+            DateTime date = new DateTime(year, month, day);
+            try
+            {
+                if (mode == InputMode.Create)
+                {
+                    fileCabinetService.CreateRecord(firstName, lastName, sexString[0], weight, height, date);
+                }
+                else
+                {
+                    fileCabinetService.EditRecord(value, firstName, lastName, sexString[0], weight, height, date);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("Your input was not recorded. Try again.");
+                GetUserInputAndRecord(mode);
+                return;
+            }
+
+            if (mode == InputMode.Create)
+            {
+                Console.WriteLine($"Record #{fileCabinetService.GetStat() + 1} is created");
+            }
+            else
+            {
+                Console.WriteLine($"Record #{value} is updated");
             }
         }
     }
