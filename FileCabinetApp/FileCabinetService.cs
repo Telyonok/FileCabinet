@@ -7,7 +7,7 @@ namespace FileCabinetApp
     /// Class <c>FileCabinetService</c> provides methods for creating, editting, listing,
     /// finding and validating records.
     /// </summary>
-    public class FileCabinetService
+    public abstract class FileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
@@ -21,7 +21,7 @@ namespace FileCabinetApp
         /// <returns> Record's id. </returns>
         public int CreateRecord(UnvalidatedRecordData unvalidatedRecord)
         {
-            ValidateInput(unvalidatedRecord);
+            this.ValidateInput(unvalidatedRecord);
 
             var record = new FileCabinetRecord
             {
@@ -47,7 +47,7 @@ namespace FileCabinetApp
         /// <param name="unvalidatedRecord">Record data that needs to be validated.</param>
         public void EditRecord(int id, UnvalidatedRecordData unvalidatedRecord)
         {
-            ValidateInput(unvalidatedRecord);
+            this.ValidateInput(unvalidatedRecord);
             string? oldFirstName = this.list[id - 1].FirstName;
             string? oldLastName = this.list[id - 1].LastName;
             DateTime oldDateOfBirth = this.list[id - 1].DateOfBirth;
@@ -139,61 +139,41 @@ namespace FileCabinetApp
             return this.dateOfBirthDictionary[dateOfBirth].ToArray();
         }
 
-        private static void ValidateNameString(string name)
-        {
-            if (name is null)
-            {
-                throw new ArgumentNullException(nameof(name));
-            }
+        /// <summary>
+        /// Validates unvalidateRecord's parameters.
+        /// </summary>
+        /// <param name="unvalidatedRecord">Record to validate.</param>
+        protected abstract void ValidateInput(UnvalidatedRecordData unvalidatedRecord);
 
-            if (name.Length < 2 || name.Length > 60 || name.Trim() == string.Empty)
-            {
-                throw new ArgumentException("String must be 2 to 60 characters long and consist not only of whitespaces", nameof(name));
-            }
-        }
+        /// <summary>
+        /// Validates Person's name parameters.
+        /// </summary>
+        /// <param name="name">Name to validate.</param>
+        protected abstract void ValidateNameString(string name);
 
-        private static void ValidateDateTime(DateTime dateTime)
-        {
-            var marginDate = new DateTime(year: 1950, month: 1, day: 1);
-            if (dateTime.CompareTo(DateTime.Now) > 0 || dateTime.CompareTo(marginDate) < 0)
-            {
-                throw new ArgumentException("Incorrect Date of birth");
-            }
-        }
+        /// <summary>
+        /// Validates Person's date of birth parameter.
+        /// </summary>
+        /// <param name="dateTime">Date to validate.</param>
+        protected abstract void ValidateDateTime(DateTime dateTime);
 
-        private static void ValidateSex(char sex)
-        {
-            if (!char.IsLetter(sex))
-            {
-                throw new ArgumentException("Sex should be a letter!");
-            }
-        }
+        /// <summary>
+        /// Validates Person's sex parameter.
+        /// </summary>
+        /// <param name="sex">Sex to validate.</param>
+        protected abstract void ValidateSex(char sex);
 
-        private static void ValidateWeight(short weight)
-        {
-            if (weight < 0 || weight > 300)
-            {
-                throw new ArgumentException("Weight must be from 0 to 300");
-            }
-        }
+        /// <summary>
+        /// Validates Person's weight parameter.
+        /// </summary>
+        /// <param name="weight">Weight to validate.</param>
+        protected abstract void ValidateWeight(short weight);
 
-        private static void ValidateHeight(decimal height)
-        {
-            if (height < 0 || height > 300)
-            {
-                throw new ArgumentException("Height must be from 0 to 300");
-            }
-        }
-
-        private static void ValidateInput(UnvalidatedRecordData unvalidatedRecord)
-        {
-            ValidateNameString(unvalidatedRecord.FirstName);
-            ValidateNameString(unvalidatedRecord.LastName);
-            ValidateDateTime(unvalidatedRecord.DateOfBirth);
-            ValidateSex(unvalidatedRecord.Sex);
-            ValidateWeight(unvalidatedRecord.Weight);
-            ValidateHeight(unvalidatedRecord.Height);
-        }
+        /// <summary>
+        /// Validates Person's height parameter.
+        /// </summary>
+        /// <param name="height">Height to validate.</param>
+        protected abstract void ValidateHeight(decimal height);
 
         private void UpdateDictionaries(UnvalidatedRecordData unvalidatedRecord, int id)
         {

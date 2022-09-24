@@ -4,5 +4,290 @@
         <name>FileCabinetApp</name>
     </assembly>
     <members>
+        <member name="T:FileCabinetApp.FileCabinetCustomService">
+            <summary>
+            Defines custom service validation rules.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetCustomService.ValidateInput(FileCabinetApp.UnvalidatedRecordData)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetCustomService.ValidateNameString(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetCustomService.ValidateDateTime(System.DateTime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetCustomService.ValidateSex(System.Char)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetCustomService.ValidateWeight(System.Int16)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetCustomService.ValidateHeight(System.Decimal)">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetDefaultService">
+            <summary>
+            Defines default service validation rules.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetDefaultService.ValidateInput(FileCabinetApp.UnvalidatedRecordData)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetDefaultService.ValidateNameString(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetDefaultService.ValidateDateTime(System.DateTime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetDefaultService.ValidateSex(System.Char)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetDefaultService.ValidateWeight(System.Int16)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetDefaultService.ValidateHeight(System.Decimal)">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetRecord">
+            <summary>
+            Class <c>FileCabinetRecord</c> stores information about a person.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.Id">
+            <summary>
+            Gets or sets id value.
+            </summary>
+            <value>
+            id represents record's identification number.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.FirstName">
+            <summary>
+            Gets or sets firstName value.
+            </summary>
+            <value>
+            firstName represents person's first name.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.LastName">
+            <summary>
+            Gets or sets lastName value.
+            </summary>
+            <value>
+            lastName represents person's last name.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.Sex">
+            <summary>
+            Gets or sets sex value.
+            </summary>
+            <value>
+            sex represents person's sex.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.Weight">
+            <summary>
+            Gets or sets weight value.
+            </summary>
+            <value>
+            weight represents person's weight in kilograms.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.Height">
+            <summary>
+            Gets or sets height value.
+            </summary>
+            <value>
+            height represents person's height in cm.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.DateOfBirth">
+            <summary>
+            Gets or sets dateOfBirth value.
+            </summary>
+            <value>
+            dateOfBirth represents person's date of birth.
+            </value>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetService">
+            <summary>
+            Class <c>FileCabinetService</c> provides methods for creating, editting, listing,
+            finding and validating records.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.CreateRecord(FileCabinetApp.UnvalidatedRecordData)">
+            <summary>
+            Creates a new record after validating user input and returns it id.
+            </summary>
+            <param name="unvalidatedRecord">Record data that needs to be validated.</param>
+            <returns> Record's id. </returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.EditRecord(System.Int32,FileCabinetApp.UnvalidatedRecordData)">
+            <summary>
+            Edits a record after validating new input.
+            </summary>
+            <param name="id">Record's id.</param>
+            <param name="unvalidatedRecord">Record data that needs to be validated.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.GetRecords">
+            <summary>
+            Gets an array with all records from the <c>list</c>.
+            </summary>
+            <returns> Array with all records. </returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.GetStat">
+            <summary>
+            Returns the amount of created records.
+            </summary>
+            <returns> Count of elements in <c>list</c>. </returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.FindByFirstName(System.String)">
+            <summary>
+            Returns all records with their first name equal to <c>firstName</c>.
+            </summary>
+            <param name="firstName">Name to search by.</param>
+            <returns> Array of all records with corresponding first name. </returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.FindByLastName(System.String)">
+            <summary>
+            Returns all records with their last name equal to <c>lastName</c>.
+            </summary>
+            <param name="lastName">Name to search by.</param>
+            <returns> Array of all records with corresponding last name. </returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.FindByDateOfBirth(System.DateTime)">
+            <summary>
+            Returns all records with their date of birth equal to <c>dateOfBirth</c>.
+            </summary>
+            <param name="dateOfBirth">Date to search by.</param>
+            <returns> Array of all records with corresponding date of birth. </returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.ValidateInput(FileCabinetApp.UnvalidatedRecordData)">
+            <summary>
+            Validates unvalidateRecord's parameters.
+            </summary>
+            <param name="unvalidatedRecord">Record to validate.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.ValidateNameString(System.String)">
+            <summary>
+            Validates Person's name parameters.
+            </summary>
+            <param name="name">Name to validate.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.ValidateDateTime(System.DateTime)">
+            <summary>
+            Validates Person's date of birth parameter.
+            </summary>
+            <param name="dateTime">Date to validate.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.ValidateSex(System.Char)">
+            <summary>
+            Validates Person's sex parameter.
+            </summary>
+            <param name="sex">Sex to validate.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.ValidateWeight(System.Int16)">
+            <summary>
+            Validates Person's weight parameter.
+            </summary>
+            <param name="weight">Weight to validate.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.ValidateHeight(System.Decimal)">
+            <summary>
+            Validates Person's height parameter.
+            </summary>
+            <param name="height">Height to validate.</param>
+        </member>
+        <member name="T:FileCabinetApp.InputMode">
+            <summary>
+            Input mode for <c>GetPlayerInputAndRecord</c> method.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.InputMode.Create">
+            <summary>
+            Represents 'Create' mode.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.InputMode.Edit">
+            <summary>
+            Represents 'Edit' mode.
+            </summary>
+        </member>
+        <member name="T:FileCabinetApp.Program">
+            <summary>
+            Class <c>Program</c> provides interface and is controlled via commands by user.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Program.Main">
+            <summary>
+            Accepts input and calls corresponding methods.
+            </summary>
+        </member>
+        <member name="T:FileCabinetApp.UnvalidatedRecordData">
+            <summary>
+            Class <c>UnvalidatedRecordData</c> stores unvalidated information about a person.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.UnvalidatedRecordData.#ctor(System.String,System.String,System.Char,System.Int16,System.Decimal,System.DateTime)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.UnvalidatedRecordData"/> class.
+            </summary>
+            <param name="firstName">Person's first name.</param>
+            <param name="lastName">Person's last name.</param>
+            <param name="sex">Person's sex.</param>
+            <param name="weight">Person's weight.</param>
+            <param name="height">Persons's height.</param>
+            <param name="dateOfBirth">Person's date of birth.</param>
+        </member>
+        <member name="P:FileCabinetApp.UnvalidatedRecordData.FirstName">
+            <summary>
+            Gets or sets firstName value.
+            </summary>
+            <value>
+            firstName represents person's first name.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.UnvalidatedRecordData.LastName">
+            <summary>
+            Gets or sets lastName value.
+            </summary>
+            <value>
+            lastName represents person's last name.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.UnvalidatedRecordData.Sex">
+            <summary>
+            Gets or sets sex value.
+            </summary>
+            <value>
+            sex represents person's sex.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.UnvalidatedRecordData.Weight">
+            <summary>
+            Gets or sets weight value.
+            </summary>
+            <value>
+            weight represents person's weight in kilograms.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.UnvalidatedRecordData.Height">
+            <summary>
+            Gets or sets height value.
+            </summary>
+            <value>
+            height represents person's height in cm.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.UnvalidatedRecordData.DateOfBirth">
+            <summary>
+            Gets or sets dateOfBirth value.
+            </summary>
+            <value>
+            dateOfBirth represents person's date of birth.
+            </value>
+        </member>
     </members>
 </doc>
