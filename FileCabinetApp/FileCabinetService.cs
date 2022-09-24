@@ -15,6 +15,12 @@ namespace FileCabinetApp
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
 
         /// <summary>
+        /// Returns service name.
+        /// </summary>
+        /// <returns>Service name.</returns>
+        public abstract string GetServiceName();
+
+        /// <summary>
         /// Creates a new record after validating user input and returns it id.
         /// </summary>
         /// <param name="unvalidatedRecord">Record data that needs to be validated.</param>

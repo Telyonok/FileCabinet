@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Net.Sockets;
 
 [assembly: CLSCompliant(true)]
 
@@ -17,7 +18,7 @@ namespace FileCabinetApp
 
         private static bool isRunning = true;
 
-        private static FileCabinetService fileCabinetService = new FileCabinetCustomService();
+        private static FileCabinetService fileCabinetService = new FileCabinetDefaultService();
 
         private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
         {
@@ -44,9 +45,12 @@ namespace FileCabinetApp
         /// <summary>
         /// Accepts input and calls corresponding methods.
         /// </summary>
-        public static void Main()
+        /// <param name="args">Command line arguments.</param>
+        public static void Main(string[] args)
         {
+            ApplyArguments(args);
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
+            Console.WriteLine($"Using {fileCabinetService.GetServiceName()} validation rules.");
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
 
@@ -318,6 +322,80 @@ namespace FileCabinetApp
             {
                 Console.WriteLine($"Record #{value} is updated");
             }
+        }
+
+        private static void ApplyArguments(string[] args)
+        {
+            for (int i = 0; i < args.Length; i++)
+            {
+                if (args[i][0] == '-')
+                {
+                    switch (args[i][1])
+                    {
+                        case '-':
+                            ProcessArgument(args[i]);
+                            break;
+                        default:
+                            if (args.Length > i + 1)
+                            {
+                                ProcessArgument(args[i], args[i + 1]);
+                                i++;
+                            }
+
+                            break;
+                    }
+                }
+                else
+                {
+                    throw new ArgumentException($"Unknown command \"{args[i]}\"");
+                }
+            }
+        }
+
+        private static void ProcessArgument(string argument)
+        {
+            string[] splittedArgument = argument.Split('=');
+            if (splittedArgument.Length != 2)
+            {
+                throw new ArgumentException($"Invalid argument \"{splittedArgument[0]}\"");
+            }
+
+            switch (splittedArgument[0])
+            {
+                case "--validation-rules":
+                    switch (splittedArgument[1].ToLower(CultureInfo.InvariantCulture))
+                    {
+                        case "custom":
+                            fileCabinetService = new FileCabinetCustomService();
+                            return;
+                        case "default":
+                            return;
+                    }
+
+                    throw new ArgumentException($"Unknown argument \"{splittedArgument[1]}\"");
+            }
+
+            throw new ArgumentException($"Unknown argument \"{splittedArgument[0]}\"");
+        }
+
+        private static void ProcessArgument(string argument1, string argument2)
+        {
+            switch (argument1)
+            {
+                case "-v":
+                    switch (argument2.ToLower(CultureInfo.InvariantCulture))
+                    {
+                        case "custom":
+                            fileCabinetService = new FileCabinetCustomService();
+                            return;
+                        case "default":
+                            return;
+                    }
+
+                    throw new ArgumentException($"Unknown argument \"{argument2}\"");
+            }
+
+            throw new ArgumentException($"Unknown command \"{argument1}\"");
         }
     }
 }

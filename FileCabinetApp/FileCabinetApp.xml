@@ -9,6 +9,9 @@
             Defines custom service validation rules.
             </summary>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetCustomService.GetServiceName">
+            <inheritdoc/>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetCustomService.ValidateInput(FileCabinetApp.UnvalidatedRecordData)">
             <inheritdoc/>
         </member>
@@ -31,6 +34,9 @@
             <summary>
             Defines default service validation rules.
             </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetDefaultService.GetServiceName">
+            <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.FileCabinetDefaultService.ValidateInput(FileCabinetApp.UnvalidatedRecordData)">
             <inheritdoc/>
@@ -116,6 +122,12 @@
             Class <c>FileCabinetService</c> provides methods for creating, editting, listing,
             finding and validating records.
             </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.GetServiceName">
+            <summary>
+            Returns service name.
+            </summary>
+            <returns>Service name.</returns>
         </member>
         <member name="M:FileCabinetApp.FileCabinetService.CreateRecord(FileCabinetApp.UnvalidatedRecordData)">
             <summary>
@@ -220,10 +232,11 @@
             Class <c>Program</c> provides interface and is controlled via commands by user.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.Program.Main">
+        <member name="M:FileCabinetApp.Program.Main(System.String[])">
             <summary>
             Accepts input and calls corresponding methods.
             </summary>
+            <param name="args">Command line arguments.</param>
         </member>
         <member name="T:FileCabinetApp.UnvalidatedRecordData">
             <summary>

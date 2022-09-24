@@ -12,6 +12,12 @@ namespace FileCabinetApp
     internal class FileCabinetCustomService : FileCabinetService
     {
         /// <inheritdoc/>
+        public override string GetServiceName()
+        {
+            return "custom";
+        }
+
+        /// <inheritdoc/>
         protected override void ValidateInput(UnvalidatedRecordData unvalidatedRecord)
         {
             this.ValidateNameString(unvalidatedRecord.FirstName);
