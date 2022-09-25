@@ -15,6 +15,12 @@ namespace FileCabinetApp
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
 
         /// <summary>
+        /// Creates an IRecordValidator object.
+        /// </summary>
+        /// <returns>IRecordValidator object.</returns>
+        public abstract IRecordValidator CreateValidator();
+
+        /// <summary>
         /// Returns service name.
         /// </summary>
         /// <returns>Service name.</returns>
@@ -27,7 +33,7 @@ namespace FileCabinetApp
         /// <returns> Record's id. </returns>
         public int CreateRecord(UnvalidatedRecordData unvalidatedRecord)
         {
-            this.ValidateInput(unvalidatedRecord);
+            this.CreateValidator().ValidateParameters(unvalidatedRecord);
 
             var record = new FileCabinetRecord
             {
@@ -53,7 +59,7 @@ namespace FileCabinetApp
         /// <param name="unvalidatedRecord">Record data that needs to be validated.</param>
         public void EditRecord(int id, UnvalidatedRecordData unvalidatedRecord)
         {
-            this.ValidateInput(unvalidatedRecord);
+            this.CreateValidator().ValidateParameters(unvalidatedRecord);
             string? oldFirstName = this.list[id - 1].FirstName;
             string? oldLastName = this.list[id - 1].LastName;
             DateTime oldDateOfBirth = this.list[id - 1].DateOfBirth;
@@ -144,42 +150,6 @@ namespace FileCabinetApp
 
             return this.dateOfBirthDictionary[dateOfBirth].ToArray();
         }
-
-        /// <summary>
-        /// Validates unvalidateRecord's parameters.
-        /// </summary>
-        /// <param name="unvalidatedRecord">Record to validate.</param>
-        protected abstract void ValidateInput(UnvalidatedRecordData unvalidatedRecord);
-
-        /// <summary>
-        /// Validates Person's name parameters.
-        /// </summary>
-        /// <param name="name">Name to validate.</param>
-        protected abstract void ValidateNameString(string name);
-
-        /// <summary>
-        /// Validates Person's date of birth parameter.
-        /// </summary>
-        /// <param name="dateTime">Date to validate.</param>
-        protected abstract void ValidateDateTime(DateTime dateTime);
-
-        /// <summary>
-        /// Validates Person's sex parameter.
-        /// </summary>
-        /// <param name="sex">Sex to validate.</param>
-        protected abstract void ValidateSex(char sex);
-
-        /// <summary>
-        /// Validates Person's weight parameter.
-        /// </summary>
-        /// <param name="weight">Weight to validate.</param>
-        protected abstract void ValidateWeight(short weight);
-
-        /// <summary>
-        /// Validates Person's height parameter.
-        /// </summary>
-        /// <param name="height">Height to validate.</param>
-        protected abstract void ValidateHeight(decimal height);
 
         private void UpdateDictionaries(UnvalidatedRecordData unvalidatedRecord, int id)
         {

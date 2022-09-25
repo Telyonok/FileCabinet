@@ -4,30 +4,31 @@
         <name>FileCabinetApp</name>
     </assembly>
     <members>
+        <member name="T:FileCabinetApp.CustomValidator">
+            <summary>
+            Validates UnvalidatedRecordData using custom methods.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CustomValidator.ValidateParameters(FileCabinetApp.UnvalidatedRecordData)">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.DefaultValidator">
+            <summary>
+            Validates UnvalidatedRecordData using default methods.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.DefaultValidator.FileCabinetApp#IRecordValidator#ValidateParameters(FileCabinetApp.UnvalidatedRecordData)">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetCustomService">
             <summary>
             Defines custom service validation rules.
             </summary>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetCustomService.CreateValidator">
+            <inheritdoc/>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetCustomService.GetServiceName">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetCustomService.ValidateInput(FileCabinetApp.UnvalidatedRecordData)">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetCustomService.ValidateNameString(System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetCustomService.ValidateDateTime(System.DateTime)">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetCustomService.ValidateSex(System.Char)">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetCustomService.ValidateWeight(System.Int16)">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetCustomService.ValidateHeight(System.Decimal)">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.FileCabinetDefaultService">
@@ -35,25 +36,10 @@
             Defines default service validation rules.
             </summary>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetDefaultService.CreateValidator">
+            <inheritdoc/>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetDefaultService.GetServiceName">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetDefaultService.ValidateInput(FileCabinetApp.UnvalidatedRecordData)">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetDefaultService.ValidateNameString(System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetDefaultService.ValidateDateTime(System.DateTime)">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetDefaultService.ValidateSex(System.Char)">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetDefaultService.ValidateWeight(System.Int16)">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetDefaultService.ValidateHeight(System.Decimal)">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
@@ -123,6 +109,12 @@
             finding and validating records.
             </summary>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetService.CreateValidator">
+            <summary>
+            Creates an IRecordValidator object.
+            </summary>
+            <returns>IRecordValidator object.</returns>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetService.GetServiceName">
             <summary>
             Returns service name.
@@ -176,42 +168,6 @@
             <param name="dateOfBirth">Date to search by.</param>
             <returns> Array of all records with corresponding date of birth. </returns>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetService.ValidateInput(FileCabinetApp.UnvalidatedRecordData)">
-            <summary>
-            Validates unvalidateRecord's parameters.
-            </summary>
-            <param name="unvalidatedRecord">Record to validate.</param>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.ValidateNameString(System.String)">
-            <summary>
-            Validates Person's name parameters.
-            </summary>
-            <param name="name">Name to validate.</param>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.ValidateDateTime(System.DateTime)">
-            <summary>
-            Validates Person's date of birth parameter.
-            </summary>
-            <param name="dateTime">Date to validate.</param>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.ValidateSex(System.Char)">
-            <summary>
-            Validates Person's sex parameter.
-            </summary>
-            <param name="sex">Sex to validate.</param>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.ValidateWeight(System.Int16)">
-            <summary>
-            Validates Person's weight parameter.
-            </summary>
-            <param name="weight">Weight to validate.</param>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.ValidateHeight(System.Decimal)">
-            <summary>
-            Validates Person's height parameter.
-            </summary>
-            <param name="height">Height to validate.</param>
-        </member>
         <member name="T:FileCabinetApp.InputMode">
             <summary>
             Input mode for <c>GetPlayerInputAndRecord</c> method.
@@ -226,6 +182,17 @@
             <summary>
             Represents 'Edit' mode.
             </summary>
+        </member>
+        <member name="T:FileCabinetApp.IRecordValidator">
+            <summary>
+            Validates UnvalidatedRecordData.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.IRecordValidator.ValidateParameters(FileCabinetApp.UnvalidatedRecordData)">
+            <summary>
+            Validates unvalidateRecord's parameters.
+            </summary>
+            <param name="parameters">Parameters to validate.</param>
         </member>
         <member name="T:FileCabinetApp.Program">
             <summary>
