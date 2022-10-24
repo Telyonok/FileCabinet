@@ -16,5 +16,11 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="parameters">Parameters to validate.</param>
         public void ValidateParameters(UnvalidatedRecordData parameters);
+
+        /// <summary>
+        /// Returns service name.
+        /// </summary>
+        /// <returns>Service name.</returns>
+        public string GetValidatorName();
     }
 }

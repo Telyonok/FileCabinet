@@ -22,6 +22,12 @@ namespace FileCabinetApp
             ValidateHeight(unvalidatedRecord.Height);
         }
 
+        /// <inheritdoc/>
+        public string GetValidatorName()
+        {
+            return "custom";
+        }
+
         private static void ValidateNameString(string name)
         {
             if (name is null)

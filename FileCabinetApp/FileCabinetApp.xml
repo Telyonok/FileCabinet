@@ -12,38 +12,18 @@
         <member name="M:FileCabinetApp.CustomValidator.ValidateParameters(FileCabinetApp.UnvalidatedRecordData)">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.CustomValidator.GetValidatorName">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.DefaultValidator">
             <summary>
             Validates UnvalidatedRecordData using default methods.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.DefaultValidator.FileCabinetApp#IRecordValidator#ValidateParameters(FileCabinetApp.UnvalidatedRecordData)">
+        <member name="M:FileCabinetApp.DefaultValidator.ValidateParameters(FileCabinetApp.UnvalidatedRecordData)">
             <inheritdoc/>
         </member>
-        <member name="T:FileCabinetApp.FileCabinetCustomService">
-            <summary>
-            Defines custom service validation rules.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetCustomService.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetCustomService"/> class.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetCustomService.GetServiceName">
-            <inheritdoc/>
-        </member>
-        <member name="T:FileCabinetApp.FileCabinetDefaultService">
-            <summary>
-            Defines default service validation rules.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetDefaultService.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetDefaultService"/> class.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetDefaultService.GetServiceName">
+        <member name="M:FileCabinetApp.DefaultValidator.GetValidatorName">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
@@ -117,13 +97,15 @@
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetService"/> class.
             </summary>
-            <param name="validator">Set of validation rules.</param>
+            <param name="validator">Set of validation methods.</param>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetService.GetServiceName">
+        <member name="P:FileCabinetApp.FileCabinetService.Validator">
             <summary>
-            Returns service name.
+            Gets validator used by the service.
             </summary>
-            <returns>Service name.</returns>
+            <value>
+            validator.
+            </value>
         </member>
         <member name="M:FileCabinetApp.FileCabinetService.CreateRecord(FileCabinetApp.UnvalidatedRecordData)">
             <summary>
@@ -197,6 +179,12 @@
             Validates unvalidateRecord's parameters.
             </summary>
             <param name="parameters">Parameters to validate.</param>
+        </member>
+        <member name="M:FileCabinetApp.IRecordValidator.GetValidatorName">
+            <summary>
+            Returns service name.
+            </summary>
+            <returns>Service name.</returns>
         </member>
         <member name="T:FileCabinetApp.Program">
             <summary>

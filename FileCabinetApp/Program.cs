@@ -16,11 +16,7 @@ namespace FileCabinetApp
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
 
-        private static bool isRunning = true;
-
-        private static FileCabinetService fileCabinetService = new FileCabinetDefaultService();
-
-        private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
+        private static readonly Tuple<string, Action<string>>[] Commands = new Tuple<string, Action<string>>[]
         {
             new Tuple<string, Action<string>>("help", PrintHelp),
             new Tuple<string, Action<string>>("exit", Exit),
@@ -31,7 +27,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("find", Find),
         };
 
-        private static string[][] helpMessages = new string[][]
+        private static readonly string[][] HelpMessages = new string[][]
         {
             new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
@@ -42,6 +38,10 @@ namespace FileCabinetApp
             new string[] { "find", "finds all records with given parameter value", "The 'find <parameter> \"<value>\"' command finds all records with corresponding value" },
         };
 
+        private static bool isRunning = true;
+
+        private static FileCabinetService fileCabinetService = new (new DefaultValidator());
+
         /// <summary>
         /// Accepts input and calls corresponding methods.
         /// </summary>
@@ -50,7 +50,7 @@ namespace FileCabinetApp
         {
             ApplyArguments(args);
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
-            Console.WriteLine($"Using {fileCabinetService.GetServiceName()} validation rules.");
+            Console.WriteLine($"Using {fileCabinetService.Validator.GetValidatorName()} validation rules.");
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
 
@@ -68,12 +68,12 @@ namespace FileCabinetApp
                     continue;
                 }
 
-                var index = Array.FindIndex(commands, 0, commands.Length, i => i.Item1.Equals(command, StringComparison.OrdinalIgnoreCase));
+                var index = Array.FindIndex(Commands, 0, Commands.Length, i => i.Item1.Equals(command, StringComparison.OrdinalIgnoreCase));
                 if (index >= 0)
                 {
                     const int parametersIndex = 1;
                     var parameters = inputs.Length > 1 ? inputs[parametersIndex] : string.Empty;
-                    commands[index].Item2(parameters);
+                    Commands[index].Item2(parameters);
                 }
                 else
                 {
@@ -93,10 +93,10 @@ namespace FileCabinetApp
         {
             if (!string.IsNullOrEmpty(parameters))
             {
-                var index = Array.FindIndex(helpMessages, 0, helpMessages.Length, i => string.Equals(i[Program.CommandHelpIndex], parameters, StringComparison.OrdinalIgnoreCase));
+                var index = Array.FindIndex(HelpMessages, 0, HelpMessages.Length, i => string.Equals(i[Program.CommandHelpIndex], parameters, StringComparison.OrdinalIgnoreCase));
                 if (index >= 0)
                 {
-                    Console.WriteLine(helpMessages[index][Program.ExplanationHelpIndex]);
+                    Console.WriteLine(HelpMessages[index][Program.ExplanationHelpIndex]);
                 }
                 else
                 {
@@ -107,7 +107,7 @@ namespace FileCabinetApp
             {
                 Console.WriteLine("Available commands:");
 
-                foreach (var helpMessage in helpMessages)
+                foreach (var helpMessage in HelpMessages)
                 {
                     Console.WriteLine("\t{0}\t- {1}", helpMessage[Program.CommandHelpIndex], helpMessage[Program.DescriptionHelpIndex]);
                 }
@@ -171,13 +171,13 @@ namespace FileCabinetApp
                 return;
             }
 
-            if (splittedString[1][0] != '\"' || splittedString[1][splittedString[1].Length - 1] != '\"')
+            if (splittedString[1][0] != '\"' || splittedString[1][^1] != '\"')
             {
                 Console.WriteLine("Quotation marks should not be omitted");
                 return;
             }
 
-            splittedString[1] = splittedString[1].Substring(1, splittedString[1].Length - 2).ToLower(CultureInfo.InvariantCulture);
+            splittedString[1] = splittedString[1][1..^1].ToLower(CultureInfo.InvariantCulture);
 
             switch (splittedString[0])
             {
@@ -292,8 +292,8 @@ namespace FileCabinetApp
             int month = int.Parse(splitedInput[0], CultureInfo.InvariantCulture);
             int day = int.Parse(splitedInput[1], CultureInfo.InvariantCulture);
             int year = int.Parse(splitedInput[2], CultureInfo.InvariantCulture);
-            DateTime date = new DateTime(year, month, day);
-            UnvalidatedRecordData unvalidatedRecord = new UnvalidatedRecordData(firstName, lastName, sexString[0], weight, height, date);
+            DateTime date = new (year, month, day);
+            UnvalidatedRecordData unvalidatedRecord = new (firstName, lastName, sexString[0], weight, height, date);
 
             try
             {
@@ -366,7 +366,7 @@ namespace FileCabinetApp
                     switch (splittedArgument[1].ToLower(CultureInfo.InvariantCulture))
                     {
                         case "custom":
-                            fileCabinetService = new FileCabinetCustomService();
+                            fileCabinetService = new FileCabinetService(new CustomValidator());
                             return;
                         case "default":
                             return;
@@ -386,7 +386,7 @@ namespace FileCabinetApp
                     switch (argument2.ToLower(CultureInfo.InvariantCulture))
                     {
                         case "custom":
-                            fileCabinetService = new FileCabinetCustomService();
+                            fileCabinetService = new FileCabinetService(new CustomValidator());
                             return;
                         case "default":
                             return;

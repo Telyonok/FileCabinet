@@ -12,7 +12,7 @@ namespace FileCabinetApp
     internal class DefaultValidator : IRecordValidator
     {
         /// <inheritdoc/>
-        void IRecordValidator.ValidateParameters(UnvalidatedRecordData unvalidatedRecord)
+        public void ValidateParameters(UnvalidatedRecordData unvalidatedRecord)
         {
             ValidateNameString(unvalidatedRecord.FirstName);
             ValidateNameString(unvalidatedRecord.LastName);
@@ -20,6 +20,12 @@ namespace FileCabinetApp
             ValidateSex(unvalidatedRecord.Sex);
             ValidateWeight(unvalidatedRecord.Weight);
             ValidateHeight(unvalidatedRecord.Height);
+        }
+
+        /// <inheritdoc/>
+        public string GetValidatorName()
+        {
+            return "default";
         }
 
         private static void ValidateNameString(string name)

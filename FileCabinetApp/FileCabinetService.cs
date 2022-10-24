@@ -7,28 +7,29 @@ namespace FileCabinetApp
     /// Class <c>FileCabinetService</c> provides methods for creating, editting, listing,
     /// finding and validating records.
     /// </summary>
-    public abstract class FileCabinetService
+    public class FileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new ();
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new ();
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new ();
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new ();
-        private readonly IRecordValidator validator;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetService"/> class.
         /// </summary>
-        /// <param name="validator">Set of validation rules.</param>
-        protected FileCabinetService(IRecordValidator validator)
+        /// <param name="validator">Set of validation methods.</param>
+        public FileCabinetService(IRecordValidator validator)
         {
-            this.validator = validator;
+            this.Validator = validator;
         }
 
         /// <summary>
-        /// Returns service name.
+        /// Gets validator used by the service.
         /// </summary>
-        /// <returns>Service name.</returns>
-        public abstract string GetServiceName();
+        /// <value>
+        /// validator.
+        /// </value>
+        public IRecordValidator Validator { get; }
 
         /// <summary>
         /// Creates a new record after validating user input and returns it id.
@@ -37,7 +38,7 @@ namespace FileCabinetApp
         /// <returns> Record's id. </returns>
         public int CreateRecord(UnvalidatedRecordData unvalidatedRecord)
         {
-            this.validator.ValidateParameters(unvalidatedRecord);
+            this.Validator.ValidateParameters(unvalidatedRecord);
 
             var record = new FileCabinetRecord
             {
@@ -63,7 +64,7 @@ namespace FileCabinetApp
         /// <param name="unvalidatedRecord">Record data that needs to be validated.</param>
         public void EditRecord(int id, UnvalidatedRecordData unvalidatedRecord)
         {
-            this.validator.ValidateParameters(unvalidatedRecord);
+            this.Validator.ValidateParameters(unvalidatedRecord);
             string? oldFirstName = this.list[id - 1].FirstName;
             string? oldLastName = this.list[id - 1].LastName;
             DateTime oldDateOfBirth = this.list[id - 1].DateOfBirth;
