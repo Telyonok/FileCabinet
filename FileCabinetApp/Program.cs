@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Net.Sockets;
 
 [assembly: CLSCompliant(true)]
@@ -201,12 +202,13 @@ namespace FileCabinetApp
             }
         }
 
-        private static void ListRecordArray(FileCabinetRecord[] records)
+        private static void ListRecordArray(ReadOnlyCollection<FileCabinetRecord> records)
         {
-            for (int i = 0; i < records.Length; i++)
+            int i = 0;
+            foreach (var item in records)
             {
-                var item = records[i];
                 Console.WriteLine("#{0}, {1}, {2}, sex: {3}, weight: {4}, height: {5}, {6}", i + 1, item.FirstName, item.LastName, item.Sex, item.Weight, item.Height, item.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture));
+                i++;
             }
         }
 

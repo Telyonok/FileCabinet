@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Globalization;
 
 namespace FileCabinetApp
@@ -97,9 +99,9 @@ namespace FileCabinetApp
         /// Gets an array with all records from the <c>list</c>.
         /// </summary>
         /// <returns> Array with all records. </returns>
-        public FileCabinetRecord[] GetRecords()
+        public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            return this.list.ToArray();
+            return this.list.AsReadOnly();
         }
 
         /// <summary>
@@ -116,14 +118,14 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="firstName">Name to search by.</param>
         /// <returns> Array of all records with corresponding first name. </returns>
-        public FileCabinetRecord[] FindByFirstName(string firstName)
+        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
         {
             if (!this.firstNameDictionary.ContainsKey(firstName))
             {
-                return Array.Empty<FileCabinetRecord>();
+                return new List<FileCabinetRecord>().AsReadOnly();
             }
 
-            return this.firstNameDictionary[firstName].ToArray();
+            return this.firstNameDictionary[firstName].AsReadOnly();
         }
 
         /// <summary>
@@ -131,14 +133,14 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="lastName">Name to search by.</param>
         /// <returns> Array of all records with corresponding last name. </returns>
-        public FileCabinetRecord[] FindByLastName(string lastName)
+        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
         {
             if (!this.lastNameDictionary.ContainsKey(lastName))
             {
-                return Array.Empty<FileCabinetRecord>();
+                return new List<FileCabinetRecord>().AsReadOnly();
             }
 
-            return this.lastNameDictionary[lastName].ToArray();
+            return this.lastNameDictionary[lastName].AsReadOnly();
         }
 
         /// <summary>
@@ -146,14 +148,14 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="dateOfBirth">Date to search by.</param>
         /// <returns> Array of all records with corresponding date of birth. </returns>
-        public FileCabinetRecord[] FindByDateOfBirth(DateTime dateOfBirth)
+        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
             if (!this.dateOfBirthDictionary.ContainsKey(dateOfBirth))
             {
-                return Array.Empty<FileCabinetRecord>();
+                return new List<FileCabinetRecord>().AsReadOnly();
             }
 
-            return this.dateOfBirthDictionary[dateOfBirth].ToArray();
+            return this.dateOfBirthDictionary[dateOfBirth].AsReadOnly();
         }
 
         private void UpdateDictionaries(UnvalidatedRecordData unvalidatedRecord, int id)
