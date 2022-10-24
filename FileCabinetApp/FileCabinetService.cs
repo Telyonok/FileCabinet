@@ -9,16 +9,20 @@ namespace FileCabinetApp
     /// </summary>
     public abstract class FileCabinetService
     {
-        private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
-        private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
-        private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
-        private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
+        private readonly List<FileCabinetRecord> list = new ();
+        private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new ();
+        private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new ();
+        private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new ();
+        private readonly IRecordValidator validator;
 
         /// <summary>
-        /// Creates an IRecordValidator object.
+        /// Initializes a new instance of the <see cref="FileCabinetService"/> class.
         /// </summary>
-        /// <returns>IRecordValidator object.</returns>
-        public abstract IRecordValidator CreateValidator();
+        /// <param name="validator">Set of validation rules.</param>
+        protected FileCabinetService(IRecordValidator validator)
+        {
+            this.validator = validator;
+        }
 
         /// <summary>
         /// Returns service name.
@@ -33,7 +37,7 @@ namespace FileCabinetApp
         /// <returns> Record's id. </returns>
         public int CreateRecord(UnvalidatedRecordData unvalidatedRecord)
         {
-            this.CreateValidator().ValidateParameters(unvalidatedRecord);
+            this.validator.ValidateParameters(unvalidatedRecord);
 
             var record = new FileCabinetRecord
             {
@@ -59,7 +63,7 @@ namespace FileCabinetApp
         /// <param name="unvalidatedRecord">Record data that needs to be validated.</param>
         public void EditRecord(int id, UnvalidatedRecordData unvalidatedRecord)
         {
-            this.CreateValidator().ValidateParameters(unvalidatedRecord);
+            this.validator.ValidateParameters(unvalidatedRecord);
             string? oldFirstName = this.list[id - 1].FirstName;
             string? oldLastName = this.list[id - 1].LastName;
             DateTime oldDateOfBirth = this.list[id - 1].DateOfBirth;
