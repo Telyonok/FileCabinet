@@ -131,7 +131,9 @@ namespace FileCabinetApp
 
         private static void Create(string parameters)
         {
-            GetUserInputAndRecord(InputMode.Create);
+            fileCabinetService.CreateRecord();
+
+            // GetUserInputAndRecord(InputMode.Create);
         }
 
         private static void List(string parameters)
@@ -159,7 +161,7 @@ namespace FileCabinetApp
                 return;
             }
 
-            GetUserInputAndRecord(InputMode.Edit, value);
+            fileCabinetService.EditRecord(value);
         }
 
         private static void Find(string parameters)
@@ -209,120 +211,6 @@ namespace FileCabinetApp
             {
                 Console.WriteLine("#{0}, {1}, {2}, sex: {3}, weight: {4}, height: {5}, {6}", i + 1, item.FirstName, item.LastName, item.Sex, item.Weight, item.Height, item.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture));
                 i++;
-            }
-        }
-
-        private static void GetUserInputAndRecord(InputMode mode, int value = 0)
-        {
-            Console.WriteLine();
-            Console.Write("First name: ");
-            string? firstName = Console.ReadLine();
-            if (string.IsNullOrEmpty(firstName))
-            {
-                Console.WriteLine("First Name can not be empty");
-                GetUserInputAndRecord(mode);
-                return;
-            }
-
-            Console.Write("Last name: ");
-            string? lastName = Console.ReadLine();
-            if (string.IsNullOrEmpty(lastName))
-            {
-                Console.WriteLine("Last Name can not be empty");
-                GetUserInputAndRecord(mode);
-                return;
-            }
-
-            Console.Write("Sex: ");
-            string? sexString = Console.ReadLine();
-            if (string.IsNullOrEmpty(sexString))
-            {
-                Console.WriteLine("Sex can not be empty");
-                GetUserInputAndRecord(mode);
-                return;
-            }
-
-            Console.Write("Weight: ");
-            string? weightString = Console.ReadLine();
-            if (string.IsNullOrEmpty(weightString))
-            {
-                Console.WriteLine("Weight can not be empty.");
-                GetUserInputAndRecord(mode);
-                return;
-            }
-
-            if (!short.TryParse(weightString, out short weight))
-            {
-                Console.WriteLine("Weight value was invalid.");
-                GetUserInputAndRecord(mode);
-                return;
-            }
-
-            Console.Write("Height: ");
-            string? heightString = Console.ReadLine();
-            if (string.IsNullOrEmpty(heightString))
-            {
-                Console.WriteLine("Height can not be empty");
-                GetUserInputAndRecord(mode);
-                return;
-            }
-
-            if (!decimal.TryParse(heightString, out decimal height))
-            {
-                Console.WriteLine("Height value was invalid.");
-                GetUserInputAndRecord(mode);
-                return;
-            }
-
-            Console.Write("Date of birth: ");
-            string? input = Console.ReadLine();
-            if (string.IsNullOrEmpty(input))
-            {
-                Console.WriteLine("Date can not be empty");
-                GetUserInputAndRecord(mode);
-                return;
-            }
-
-            string[] splitedInput = input.Split('/');
-            if (splitedInput.Length != 3)
-            {
-                Console.WriteLine("Date is incorrect");
-                GetUserInputAndRecord(mode);
-                return;
-            }
-
-            int month = int.Parse(splitedInput[0], CultureInfo.InvariantCulture);
-            int day = int.Parse(splitedInput[1], CultureInfo.InvariantCulture);
-            int year = int.Parse(splitedInput[2], CultureInfo.InvariantCulture);
-            DateTime date = new (year, month, day);
-            UnvalidatedRecordData unvalidatedRecord = new (firstName, lastName, sexString[0], weight, height, date);
-
-            try
-            {
-                if (mode == InputMode.Create)
-                {
-                    fileCabinetService.CreateRecord(unvalidatedRecord);
-                }
-                else
-                {
-                    fileCabinetService.EditRecord(value, unvalidatedRecord);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine("Your input was not recorded. Try again.");
-                GetUserInputAndRecord(mode, value);
-                return;
-            }
-
-            if (mode == InputMode.Create)
-            {
-                Console.WriteLine($"Record #{fileCabinetService.GetStat()} is created");
-            }
-            else
-            {
-                Console.WriteLine($"Record #{value} is updated");
             }
         }
 
