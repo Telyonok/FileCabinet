@@ -53,7 +53,7 @@ namespace FileCabinetApp
             Console.Write("Date of birth: ");
             record.DateOfBirth = ReadInput<DateTime>(InputToDateConverter, this.Validator.ValidateDateTime);
 
-            record.Id = this.list.Count();
+            record.Id = this.list.Count;
 
             this.list.Add(record);
             this.UpdateDictionaries(record);
