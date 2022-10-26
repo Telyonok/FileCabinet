@@ -168,6 +168,15 @@ namespace FileCabinetApp
             return this.dateOfBirthDictionary[dateOfBirth].AsReadOnly();
         }
 
+        /// <summary>
+        /// Creates a snapshot of current recordList.
+        /// </summary>
+        /// <returns>Created recordList snapshot.</returns>
+        public FileCabinetServiceSnapshot MakeSnapshot()
+        {
+            return new FileCabinetServiceSnapshot(this.list);
+        }
+
         private static T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
         {
             do
@@ -211,7 +220,7 @@ namespace FileCabinetApp
         private static Tuple<bool, string, DateTime> InputToDateConverter(string input)
         {
             bool successful = true;
-            DateTime time;
+            DateTime time = DateTime.MinValue;
             try
             {
                 time = DateTime.Parse(input, CultureInfo.InvariantCulture);
@@ -221,12 +230,19 @@ namespace FileCabinetApp
                 successful = false;
             }
 
-            return Tuple.Create<bool, string, DateTime>(successful, "incorrect date format", DateTime.Parse(input, CultureInfo.InvariantCulture));
+            return Tuple.Create<bool, string, DateTime>(successful, "incorrect date format", time);
         }
 
         private static Tuple<bool, string, char> InputToSexConverter(string input)
         {
-            return Tuple.Create<bool, string, char>(!string.IsNullOrEmpty(input), "sex was null or empty", input[0]);
+            if (!string.IsNullOrEmpty(input))
+            {
+                return Tuple.Create<bool, string, char>(true, string.Empty, input[0]);
+            }
+            else
+            {
+                return Tuple.Create<bool, string, char>(false, "sex was null or empty", '?');
+            }
         }
 
         private static Tuple<bool, string, short> InputToWeightConverter(string input)

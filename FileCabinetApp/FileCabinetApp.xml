@@ -111,6 +111,28 @@
             dateOfBirth represents person's date of birth.
             </value>
         </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordCsvWriter">
+            <summary>
+            Provides methods for csv outputing.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvWriter.#ctor(System.IO.StreamWriter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordCsvWriter"/> class.
+            </summary>
+            <param name="textWriter">Stream to write to.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvWriter.Write(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Writes record's information to file.
+            </summary>
+            <param name="record">Record to write.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvWriter.PrintParamNames">
+            <summary>
+            Prints names of parameters.
+            </summary>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetService">
             <summary>
             Class <c>FileCabinetService</c> provides methods for creating, editting, listing,
@@ -175,6 +197,29 @@
             </summary>
             <param name="dateOfBirth">Date to search by.</param>
             <returns> Array of all records with corresponding date of birth. </returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.MakeSnapshot">
+            <summary>
+            Creates a snapshot of current recordList.
+            </summary>
+            <returns>Created recordList snapshot.</returns>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetServiceSnapshot">
+            <summary>
+            Captures current record list.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.#ctor(System.Collections.Generic.List{FileCabinetApp.FileCabinetRecord})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/> class.
+            </summary>
+            <param name="recordList">List of records.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.SaveToCsv(System.IO.StreamWriter)">
+            <summary>
+            Creates and utilizes FileCabinetRecordCsvWriter instance.
+            </summary>
+            <param name="streamWriter">StreamWriter to use.</param>
         </member>
         <member name="T:FileCabinetApp.InputMode">
             <summary>

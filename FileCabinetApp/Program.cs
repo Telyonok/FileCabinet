@@ -26,6 +26,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("list", List),
             new Tuple<string, Action<string>>("edit", Edit),
             new Tuple<string, Action<string>>("find", Find),
+            new Tuple<string, Action<string>>("export", Export),
         };
 
         private static readonly string[][] HelpMessages = new string[][]
@@ -37,6 +38,7 @@ namespace FileCabinetApp
             new string[] { "list", "lists all records", "The 'list' command lists all records" },
             new string[] { "edit", "edits a chosen record", "The 'edit <id>' command edits a record with corresponding Id" },
             new string[] { "find", "finds all records with given parameter value", "The 'find <parameter> \"<value>\"' command finds all records with corresponding value" },
+            new string[] { "export", "exports all current records to a file", "The 'export <parameter>' command outputs all current records to a file of <parameter> format. Possible values are: csv, xml" },
         };
 
         private static bool isRunning = true;
@@ -180,7 +182,7 @@ namespace FileCabinetApp
                 return;
             }
 
-            splittedString[1] = splittedString[1][1..^1].ToLower(CultureInfo.InvariantCulture);
+            splittedString[1] = splittedString[1][1..^1];
 
             switch (splittedString[0])
             {
@@ -202,6 +204,62 @@ namespace FileCabinetApp
                     Console.WriteLine("Incorrect parameter");
                     return;
             }
+        }
+
+        private static void Export(string parameters)
+        {
+            parameters = parameters.ToLower(CultureInfo.InvariantCulture);
+            string[] splittedString = parameters.Split(' ');
+            if (splittedString.Length != 2)
+            {
+                Console.WriteLine("'Export' command should have 2 parameters");
+                return;
+            }
+
+            StreamWriter streamWriter;
+
+            if (File.Exists(splittedString[1]))
+            {
+                char input;
+                bool correct;
+                do
+                {
+                    Console.Write($"File already exists - rewrite {splittedString[1]}? [Y/n]");
+                    correct = char.TryParse(Console.ReadLine(), out input);
+                }
+                while (!correct || (input != 'Y' && input != 'n'));
+
+                if (input == 'n')
+                {
+                    return;
+                }
+            }
+
+            try
+            {
+                streamWriter = new (splittedString[1]);
+            }
+            catch
+            {
+                Console.WriteLine($"Export failed: can\'t open file {splittedString[1]}.");
+                return;
+            }
+
+            FileCabinetServiceSnapshot snapshot = fileCabinetService.MakeSnapshot();
+            switch (splittedString[0])
+            {
+                case "csv":
+                    snapshot.SaveToCsv(streamWriter);
+                    break;
+                case "xml":
+                    break;
+                default:
+                    Console.WriteLine("Incorrect parameter");
+                    return;
+            }
+
+            Console.WriteLine($"All records are exported to file {splittedString[1]}.");
+            streamWriter.Close();
         }
 
         private static void ListRecordArray(ReadOnlyCollection<FileCabinetRecord> records)
