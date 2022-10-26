@@ -7,17 +7,17 @@ using System.Threading.Tasks;
 namespace FileCabinetApp
 {
     /// <summary>
-    /// Input mode for GetPlayerInputAndRecord method.
+    /// Input mode for <c>GetPlayerInputAndRecord</c> method.
     /// </summary>
     internal enum InputMode
     {
         /// <summary>
-        /// Represents a 'Create' mode.
+        /// Represents 'Create' mode.
         /// </summary>
         Create,
 
         /// <summary>
-        /// Represents an 'Edit' mode.
+        /// Represents 'Edit' mode.
         /// </summary>
         Edit,
     }

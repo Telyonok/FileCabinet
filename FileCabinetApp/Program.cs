@@ -1,7 +1,14 @@
-﻿using System.Globalization;
+﻿using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Net.Sockets;
+
+[assembly: CLSCompliant(true)]
 
 namespace FileCabinetApp
 {
+    /// <summary>
+    /// Class <c>Program</c> provides interface and is controlled via commands by user.
+    /// </summary>
     public static class Program
     {
         private const string DeveloperName = "Ilya Chvilyov";
@@ -10,11 +17,7 @@ namespace FileCabinetApp
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
 
-        private static bool isRunning = true;
-
-        private static FileCabinetService fileCabinetService = new FileCabinetService();
-
-        private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
+        private static readonly Tuple<string, Action<string>>[] Commands = new Tuple<string, Action<string>>[]
         {
             new Tuple<string, Action<string>>("help", PrintHelp),
             new Tuple<string, Action<string>>("exit", Exit),
@@ -25,7 +28,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("find", Find),
         };
 
-        private static string[][] helpMessages = new string[][]
+        private static readonly string[][] HelpMessages = new string[][]
         {
             new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
@@ -36,9 +39,19 @@ namespace FileCabinetApp
             new string[] { "find", "finds all records with given parameter value", "The 'find <parameter> \"<value>\"' command finds all records with corresponding value" },
         };
 
+        private static bool isRunning = true;
+
+        private static FileCabinetService fileCabinetService = new (new DefaultValidator());
+
+        /// <summary>
+        /// Accepts input and calls corresponding methods.
+        /// </summary>
+        /// <param name="args">Command line arguments.</param>
         public static void Main(string[] args)
         {
+            ApplyArguments(args);
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
+            Console.WriteLine($"Using {fileCabinetService.Validator.GetValidatorName()} validation rules.");
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
 
@@ -56,12 +69,12 @@ namespace FileCabinetApp
                     continue;
                 }
 
-                var index = Array.FindIndex(commands, 0, commands.Length, i => i.Item1.Equals(command, StringComparison.OrdinalIgnoreCase));
+                var index = Array.FindIndex(Commands, 0, Commands.Length, i => i.Item1.Equals(command, StringComparison.OrdinalIgnoreCase));
                 if (index >= 0)
                 {
                     const int parametersIndex = 1;
                     var parameters = inputs.Length > 1 ? inputs[parametersIndex] : string.Empty;
-                    commands[index].Item2(parameters);
+                    Commands[index].Item2(parameters);
                 }
                 else
                 {
@@ -81,10 +94,10 @@ namespace FileCabinetApp
         {
             if (!string.IsNullOrEmpty(parameters))
             {
-                var index = Array.FindIndex(helpMessages, 0, helpMessages.Length, i => string.Equals(i[Program.CommandHelpIndex], parameters, StringComparison.OrdinalIgnoreCase));
+                var index = Array.FindIndex(HelpMessages, 0, HelpMessages.Length, i => string.Equals(i[Program.CommandHelpIndex], parameters, StringComparison.OrdinalIgnoreCase));
                 if (index >= 0)
                 {
-                    Console.WriteLine(helpMessages[index][Program.ExplanationHelpIndex]);
+                    Console.WriteLine(HelpMessages[index][Program.ExplanationHelpIndex]);
                 }
                 else
                 {
@@ -95,7 +108,7 @@ namespace FileCabinetApp
             {
                 Console.WriteLine("Available commands:");
 
-                foreach (var helpMessage in helpMessages)
+                foreach (var helpMessage in HelpMessages)
                 {
                     Console.WriteLine("\t{0}\t- {1}", helpMessage[Program.CommandHelpIndex], helpMessage[Program.DescriptionHelpIndex]);
                 }
@@ -104,137 +117,28 @@ namespace FileCabinetApp
             Console.WriteLine();
         }
 
+        private static void Exit(string parameters)
+        {
+            Console.WriteLine("Exiting an application...");
+            isRunning = false;
+        }
+
         private static void Stat(string parameters)
         {
             var recordsCount = Program.fileCabinetService.GetStat();
             Console.WriteLine($"{recordsCount} record(s).");
         }
 
+        private static void Create(string parameters)
+        {
+            fileCabinetService.CreateRecord();
+
+            // GetUserInputAndRecord(InputMode.Create);
+        }
+
         private static void List(string parameters)
         {
             ListRecordArray(fileCabinetService.GetRecords());
-        }
-
-        private static void ListRecordArray(FileCabinetRecord[] records)
-        {
-            for (int i = 0; i < records.Length; i++)
-            {
-                var item = records[i];
-                Console.WriteLine("#{0}, {1}, {2}, sex: {3}, weight: {4}, height: {5}, {6}", i + 1, item.FirstName, item.LastName, item.Sex, item.Weight, item.Height, item.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture));
-            }
-        }
-
-        private static void GetPlayerInputAndRecord(InputMode mode, int value = 0)
-        {
-            Console.WriteLine();
-            Console.Write("First name: ");
-            string? firstName = Console.ReadLine();
-            if (string.IsNullOrEmpty(firstName))
-            {
-                Console.WriteLine("First Name can not be empty");
-                GetPlayerInputAndRecord(mode);
-                return;
-            }
-
-            Console.Write("Last name: ");
-            string? lastName = Console.ReadLine();
-            if (string.IsNullOrEmpty(lastName))
-            {
-                Console.WriteLine("Last Name can not be empty");
-                GetPlayerInputAndRecord(mode);
-                return;
-            }
-
-            Console.Write("Sex: ");
-            string? sexString = Console.ReadLine();
-            if (string.IsNullOrEmpty(sexString))
-            {
-                Console.WriteLine("Sex can not be empty");
-                GetPlayerInputAndRecord(mode);
-                return;
-            }
-
-            Console.Write("Weight: ");
-            string? weightString = Console.ReadLine();
-            if (string.IsNullOrEmpty(weightString))
-            {
-                Console.WriteLine("Weight can not be empty");
-                GetPlayerInputAndRecord(mode);
-                return;
-            }
-
-            short weight = short.Parse(weightString, CultureInfo.InvariantCulture);
-
-            Console.Write("Height: ");
-            string? heightString = Console.ReadLine();
-            if (string.IsNullOrEmpty(heightString))
-            {
-                Console.WriteLine("Height can not be empty");
-                GetPlayerInputAndRecord(mode);
-                return;
-            }
-
-            decimal height = decimal.Parse(heightString, CultureInfo.InvariantCulture);
-
-            Console.Write("Date of birth: ");
-            string? input = Console.ReadLine();
-            if (string.IsNullOrEmpty(input))
-            {
-                Console.WriteLine("Date can not be empty");
-                GetPlayerInputAndRecord(mode);
-                return;
-            }
-
-            string[] splitedInput = input.Split('/');
-            if (splitedInput.Length != 3)
-            {
-                Console.WriteLine("Date is incorrect");
-                GetPlayerInputAndRecord(mode);
-                return;
-            }
-
-            int month = int.Parse(splitedInput[0], CultureInfo.InvariantCulture);
-            int day = int.Parse(splitedInput[1], CultureInfo.InvariantCulture);
-            int year = int.Parse(splitedInput[2], CultureInfo.InvariantCulture);
-            DateTime date = new DateTime(year, month, day);
-            try
-            {
-                if (mode == InputMode.Create)
-                {
-                    fileCabinetService.CreateRecord(firstName, lastName, sexString[0], weight, height, date);
-                }
-                else
-                {
-                    fileCabinetService.EditRecord(value, firstName, lastName, sexString[0], weight, height, date);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine("Your input was not recorded. Try again.");
-                GetPlayerInputAndRecord(mode);
-                return;
-            }
-
-            if (mode == InputMode.Create)
-            {
-                Console.WriteLine($"Record #{fileCabinetService.GetStat() + 1} is created");
-            }
-            else
-            {
-                Console.WriteLine($"Record #{value} is updated");
-            }
-        }
-
-        private static void Create(string parameters)
-        {
-            GetPlayerInputAndRecord(InputMode.Create);
-        }
-
-        private static void Exit(string parameters)
-        {
-            Console.WriteLine("Exiting an application...");
-            isRunning = false;
         }
 
         private static void Edit(string parameters)
@@ -257,7 +161,7 @@ namespace FileCabinetApp
                 return;
             }
 
-            GetPlayerInputAndRecord(InputMode.Edit, value);
+            fileCabinetService.EditRecord(value);
         }
 
         private static void Find(string parameters)
@@ -270,13 +174,13 @@ namespace FileCabinetApp
                 return;
             }
 
-            if (splittedString[1][0] != '\"' || splittedString[1][splittedString[1].Length - 1] != '\"')
+            if (splittedString[1][0] != '\"' || splittedString[1][^1] != '\"')
             {
                 Console.WriteLine("Quotation marks should not be omitted");
                 return;
             }
 
-            splittedString[1] = splittedString[1].Substring(1, splittedString[1].Length - 2).ToLower(CultureInfo.InvariantCulture);
+            splittedString[1] = splittedString[1][1..^1].ToLower(CultureInfo.InvariantCulture);
 
             switch (splittedString[0])
             {
@@ -298,6 +202,90 @@ namespace FileCabinetApp
                     Console.WriteLine("Incorrect parameter");
                     return;
             }
+        }
+
+        private static void ListRecordArray(ReadOnlyCollection<FileCabinetRecord> records)
+        {
+            int i = 0;
+            foreach (var item in records)
+            {
+                Console.WriteLine("#{0}, {1}, {2}, sex: {3}, weight: {4}, height: {5}, {6}", i + 1, item.FirstName, item.LastName, item.Sex, item.Weight, item.Height, item.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture));
+                i++;
+            }
+        }
+
+        private static void ApplyArguments(string[] args)
+        {
+            for (int i = 0; i < args.Length; i++)
+            {
+                if (args[i][0] == '-')
+                {
+                    switch (args[i][1])
+                    {
+                        case '-':
+                            ProcessArgument(args[i]);
+                            break;
+                        default:
+                            if (args.Length > i + 1)
+                            {
+                                ProcessArgument(args[i], args[i + 1]);
+                                i++;
+                            }
+
+                            break;
+                    }
+                }
+                else
+                {
+                    throw new ArgumentException($"Unknown command \"{args[i]}\"");
+                }
+            }
+        }
+
+        private static void ProcessArgument(string argument)
+        {
+            string[] splittedArgument = argument.Split('=');
+            if (splittedArgument.Length != 2)
+            {
+                throw new ArgumentException($"Invalid argument \"{splittedArgument[0]}\"");
+            }
+
+            switch (splittedArgument[0])
+            {
+                case "--validation-rules":
+                    switch (splittedArgument[1].ToLower(CultureInfo.InvariantCulture))
+                    {
+                        case "custom":
+                            fileCabinetService = new FileCabinetService(new CustomValidator());
+                            return;
+                        case "default":
+                            return;
+                    }
+
+                    throw new ArgumentException($"Unknown argument \"{splittedArgument[1]}\"");
+            }
+
+            throw new ArgumentException($"Unknown argument \"{splittedArgument[0]}\"");
+        }
+
+        private static void ProcessArgument(string argument1, string argument2)
+        {
+            switch (argument1)
+            {
+                case "-v":
+                    switch (argument2.ToLower(CultureInfo.InvariantCulture))
+                    {
+                        case "custom":
+                            fileCabinetService = new FileCabinetService(new CustomValidator());
+                            return;
+                        case "default":
+                            return;
+                    }
+
+                    throw new ArgumentException($"Unknown argument \"{argument2}\"");
+            }
+
+            throw new ArgumentException($"Unknown command \"{argument1}\"");
         }
     }
 }
