@@ -1,6 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Net.Sockets;
+using System.Linq;
+using System.Reflection.Metadata;
+using System.Runtime.CompilerServices;
 
 [assembly: CLSCompliant(true)]
 
@@ -43,7 +45,8 @@ namespace FileCabinetApp
 
         private static bool isRunning = true;
 
-        private static FileCabinetMemoryService fileCabinetService = new (new DefaultValidator());
+        private static FileCabinetMemoryService fileCabinetMemoryService = new (new DefaultValidator());
+        private static FileCabinetFilesystemService fileCabinetFilesystemService = new (new FileStream("cabinet-records.db", FileMode.OpenOrCreate, FileAccess.ReadWrite));
 
         /// <summary>
         /// Accepts input and calls corresponding methods.
@@ -51,9 +54,9 @@ namespace FileCabinetApp
         /// <param name="args">Command line arguments.</param>
         public static void Main(string[] args)
         {
-            ApplyArguments(args);
+            ApplyLaunchArguments(args.Select(arg => arg.ToLower(CultureInfo.InvariantCulture)).ToArray());
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
-            Console.WriteLine($"Using {fileCabinetService.Validator.GetValidatorName()} validation rules.");
+            Console.WriteLine($"Using {fileCabinetMemoryService.Validator.GetValidatorName()} validation rules.");
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
 
@@ -76,7 +79,7 @@ namespace FileCabinetApp
                 {
                     const int parametersIndex = 1;
                     var parameters = inputs.Length > 1 ? inputs[parametersIndex] : string.Empty;
-                    Commands[index].Item2(parameters);
+                    Commands[index].Item2(parameters.ToLower(CultureInfo.InvariantCulture).Trim());
                 }
                 else
                 {
@@ -86,9 +89,66 @@ namespace FileCabinetApp
             while (isRunning);
         }
 
+        private static ReadOnlyCollection<string> GetAllowedParametersByCommand(string command)
+        {
+            return command switch
+            {
+                "FileCabinetApp" => new ReadOnlyCollection<string>(new List<string> { "--validation-rules=custom", "--validation-rules=default", "-v" }),
+                "create" => new ReadOnlyCollection<string>(new List<string> { "--storage", "-s" }),
+                "edit" => new ReadOnlyCollection<string>(new List<string> { "--storage", "-s" }),
+                "find" => new ReadOnlyCollection<string>(new List<string> { "--storage", "-s" }),
+                "stat" => new ReadOnlyCollection<string>(new List<string> { "--storage", "-s" }),
+                "list" => new ReadOnlyCollection<string>(new List<string> { "--storage", "-s" }),
+                _ => new ReadOnlyCollection<string>(Enumerable.Empty<string>().ToList()),
+            };
+        }
+
+        private static int GetParameterValueCount(string parameter)
+        {
+            return parameter switch
+            {
+                "--storage" => 1,
+                "-s" => 1,
+                "-v" => 1,
+                "--validation-rules=custom" => 0,
+                "--validation-rules=default" => 0,
+                _ => 0,
+            };
+        }
+
+        private static ReadOnlyCollection<string> GetAllowedValuesByParameter(string parameter)
+        {
+            return parameter switch
+            {
+                "--storage" => new ReadOnlyCollection<string>(new List<string> { "memory", "file" }),
+                "-s" => new ReadOnlyCollection<string>(new List<string> { "memory", "file" }),
+                "--validation-rule" => new ReadOnlyCollection<string>(new List<string> { "custom", "default" }),
+                "-v" => new ReadOnlyCollection<string>(new List<string> { "custom", "default" }),
+                _ => new ReadOnlyCollection<string>(Enumerable.Empty<string>().ToList()),
+            };
+        }
+
         private static void PrintMissedCommandInfo(string command)
         {
             Console.WriteLine($"There is no '{command}' command.");
+            Console.WriteLine();
+        }
+
+        private static void PrintWrongCommandParameterInfo(string command, string parameter)
+        {
+            Console.WriteLine($"'{parameter}' parameter doesn't exist for '{command}' command.");
+            Console.WriteLine();
+        }
+
+        private static void PrintWrongValueCountInfo(string parameter)
+        {
+            Console.WriteLine($"'{parameter}' parameter should have {GetParameterValueCount(parameter)} values.");
+            Console.WriteLine();
+        }
+
+        private static void PrintWrongValueInfo(string parameter, string value)
+        {
+            Console.WriteLine($"'{parameter}' parameter has no '{value}' value.");
             Console.WriteLine();
         }
 
@@ -127,78 +187,141 @@ namespace FileCabinetApp
 
         private static void Stat(string parameters)
         {
-            var recordsCount = Program.fileCabinetService.GetStat();
+            var splittedParameters = parameters.Split(" ");
+            if (!ValidateCommandArguments("stat", splittedParameters))
+            {
+                return;
+            }
+
+            int recordsCount;
+
+            if (splittedParameters.Contains<string>("file"))
+            {
+                recordsCount = fileCabinetFilesystemService.GetStat();
+            }
+            else
+            {
+                recordsCount = fileCabinetMemoryService.GetStat();
+            }
+
             Console.WriteLine($"{recordsCount} record(s).");
         }
 
         private static void Create(string parameters)
         {
-            fileCabinetService.CreateRecord();
+            var splittedParameters = parameters.Split(" ");
+            if (!ValidateCommandArguments("create", splittedParameters))
+            {
+                return;
+            }
 
-            // GetUserInputAndRecord(InputMode.Create);
+            if (splittedParameters.Contains<string>("file"))
+            {
+                fileCabinetFilesystemService.CreateRecord();
+            }
+            else
+            {
+                fileCabinetMemoryService.CreateRecord();
+            }
         }
 
         private static void List(string parameters)
         {
-            ListRecordArray(fileCabinetService.GetRecords());
+            var splittedParameters = parameters.Split(" ");
+            if (!ValidateCommandArguments("list", splittedParameters))
+            {
+                return;
+            }
+
+            if (splittedParameters.Contains<string>("file"))
+            {
+                ListRecordArray(fileCabinetFilesystemService.GetRecords());
+            }
+            else
+            {
+                ListRecordArray(fileCabinetMemoryService.GetRecords());
+            }
         }
 
         private static void Edit(string parameters)
         {
-            if (string.IsNullOrEmpty(parameters))
+            var splittedParameters = parameters.Split(" ");
+            if (string.IsNullOrEmpty(parameters) || splittedParameters[^1][0] == '-')
             {
-                Console.WriteLine("'Edit' command had no parameters");
+                Console.WriteLine("'Edit' command must have 1 value argument");
                 return;
             }
 
-            if (!int.TryParse(parameters, out int value))
+            if (splittedParameters.Length > 1)
+            {
+                if (!ValidateCommandArguments("edit", splittedParameters[..^1]))
+                {
+                    return;
+                }
+            }
+
+            if (!int.TryParse(splittedParameters[^1], out int value))
             {
                 Console.WriteLine("Parameter should be a number");
                 return;
             }
 
-            if (fileCabinetService.GetStat() < value || value < 1)
+            if (fileCabinetMemoryService.GetStat() < value || value < 1)
             {
                 Console.WriteLine($"#{value} record is not found.");
                 return;
             }
 
-            fileCabinetService.EditRecord(value);
+            if (splittedParameters.Contains<string>("file"))
+            {
+                fileCabinetFilesystemService.EditRecord(value);
+            }
+            else
+            {
+                fileCabinetMemoryService.EditRecord(value);
+            }
         }
 
         private static void Find(string parameters)
         {
-            parameters = parameters.ToLower(CultureInfo.InvariantCulture);
-            string[] splittedString = parameters.Split(' ');
-            if (splittedString.Length != 2)
+            string[] splittedParameters = parameters.Split(' ');
+            if (splittedParameters.Length < 2)
             {
-                Console.WriteLine("'Find' command should have 2 parameters");
+                Console.WriteLine("'Find' command must have 2 value arguments");
                 return;
             }
 
-            if (splittedString[1][0] != '\"' || splittedString[1][^1] != '\"')
+            if (splittedParameters[^1][0] != '\"' || splittedParameters[^1][^1] != '\"')
             {
                 Console.WriteLine("Quotation marks should not be omitted");
                 return;
             }
 
-            splittedString[1] = splittedString[1][1..^1];
+            if (splittedParameters.Length > 1)
+            {
+                if (!ValidateCommandArguments("find", splittedParameters[..^2]))
+                {
+                    return;
+                }
+            }
 
-            switch (splittedString[0])
+            splittedParameters[^1] = splittedParameters[^1][1..^1];
+
+            switch (splittedParameters[^2])
             {
                 case "firstname":
-                    ListRecordArray(fileCabinetService.FindByFirstName(splittedString[1]));
+                    ListRecordArray(fileCabinetMemoryService.FindByFirstName(splittedParameters[^1]));
                     break;
                 case "lastname":
-                    ListRecordArray(fileCabinetService.FindByLastName(splittedString[1]));
+                    ListRecordArray(fileCabinetMemoryService.FindByLastName(splittedParameters[^1]));
                     break;
                 case "dateofbirth":
-                    if (!DateTime.TryParse(splittedString[1], out DateTime date))
+                    if (!DateTime.TryParse(splittedParameters[^1], out DateTime date))
                     {
                         Console.WriteLine("Incorrect date value");
                     }
 
-                    ListRecordArray(fileCabinetService.FindByDateOfBirth(date));
+                    ListRecordArray(fileCabinetMemoryService.FindByDateOfBirth(date));
                     break;
                 default:
                     Console.WriteLine("Incorrect parameter");
@@ -245,7 +368,7 @@ namespace FileCabinetApp
                 return;
             }
 
-            FileCabinetServiceSnapshot snapshot = fileCabinetService.MakeSnapshot();
+            FileCabinetServiceSnapshot snapshot = fileCabinetMemoryService.MakeSnapshot();
             switch (splittedString[0])
             {
                 case "csv":
@@ -273,78 +396,83 @@ namespace FileCabinetApp
             }
         }
 
-        private static void ApplyArguments(string[] args)
+        private static void ApplyLaunchArguments(string[] args)
         {
-            for (int i = 0; i < args.Length; i++)
+            if (!ValidateCommandArguments("FileCabinetApp", args))
             {
-                if (args[i][0] == '-')
+                throw new ArgumentException("Invalid argument input", nameof(args));
+            }
+
+            if (args.Contains<string>("custom") || args.Contains<string>("--validation-rules=custom"))
+            {
+                fileCabinetMemoryService = new FileCabinetMemoryService(new CustomValidator());
+            }
+            else
+            {
+                fileCabinetMemoryService = new FileCabinetMemoryService(new DefaultValidator());
+            }
+        }
+
+        private static bool ValidateCommandArguments(string command, string[] arguments)
+        {
+            if (arguments.Length == 0)
+            {
+                return true;
+            }
+
+            if (!string.IsNullOrEmpty(arguments[0]))
+            {
+                int requiredValueCount = 0;
+                int valueCount = 0;
+                string currentParameter = string.Empty;
+                foreach (var arg in arguments)
                 {
-                    switch (args[i][1])
+                    if (arg[0] == '-')
                     {
-                        case '-':
-                            ProcessArgument(args[i]);
-                            break;
-                        default:
-                            if (args.Length > i + 1)
+                        if (requiredValueCount != valueCount)
+                        {
+                            PrintWrongValueCountInfo(currentParameter);
+                            return false;
+                        }
+
+                        if (!GetAllowedParametersByCommand(command).Contains(arg))
+                        {
+                            PrintWrongCommandParameterInfo(command, arg);
+                            return false;
+                        }
+
+                        currentParameter = arg;
+                        requiredValueCount = GetParameterValueCount(arg);
+                        valueCount = 0;
+                    }
+                    else
+                    {
+                        if (!GetAllowedValuesByParameter(currentParameter).Contains(arg))
+                        {
+                            if (currentParameter == string.Empty)
                             {
-                                ProcessArgument(args[i], args[i + 1]);
-                                i++;
+                                Console.WriteLine("Parameter should start with '-'");
+                            }
+                            else
+                            {
+                                PrintWrongValueInfo(currentParameter, arg);
                             }
 
-                            break;
+                            return false;
+                        }
+
+                        valueCount++;
                     }
                 }
-                else
+
+                if (requiredValueCount != valueCount)
                 {
-                    throw new ArgumentException($"Unknown command \"{args[i]}\"");
+                    PrintWrongValueCountInfo(currentParameter);
+                    return false;
                 }
             }
-        }
 
-        private static void ProcessArgument(string argument)
-        {
-            string[] splittedArgument = argument.Split('=');
-            if (splittedArgument.Length != 2)
-            {
-                throw new ArgumentException($"Invalid argument \"{splittedArgument[0]}\"");
-            }
-
-            switch (splittedArgument[0])
-            {
-                case "--validation-rules":
-                    switch (splittedArgument[1].ToLower(CultureInfo.InvariantCulture))
-                    {
-                        case "custom":
-                            fileCabinetService = new FileCabinetMemoryService(new CustomValidator());
-                            return;
-                        case "default":
-                            return;
-                    }
-
-                    throw new ArgumentException($"Unknown argument \"{splittedArgument[1]}\"");
-            }
-
-            throw new ArgumentException($"Unknown argument \"{splittedArgument[0]}\"");
-        }
-
-        private static void ProcessArgument(string argument1, string argument2)
-        {
-            switch (argument1)
-            {
-                case "-v":
-                    switch (argument2.ToLower(CultureInfo.InvariantCulture))
-                    {
-                        case "custom":
-                            fileCabinetService = new FileCabinetMemoryService(new CustomValidator());
-                            return;
-                        case "default":
-                            return;
-                    }
-
-                    throw new ArgumentException($"Unknown argument \"{argument2}\"");
-            }
-
-            throw new ArgumentException($"Unknown command \"{argument1}\"");
+            return true;
         }
     }
 }

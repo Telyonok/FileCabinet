@@ -77,8 +77,8 @@ namespace FileCabinetApp
                 throw new MissingMemberException(nameof(oldLastName));
             }
 
-            this.firstNameDictionary[oldFirstName].Remove(this.list[id]);
-            this.lastNameDictionary[oldLastName].Remove(this.list[id]);
+            this.firstNameDictionary[oldFirstName.ToLower(CultureInfo.InvariantCulture)].Remove(this.list[id]);
+            this.lastNameDictionary[oldLastName.ToLower(CultureInfo.InvariantCulture)].Remove(this.list[id]);
             this.dateOfBirthDictionary[oldDateOfBirth].Remove(this.list[id]);
 
             Console.Write("First name: ");
