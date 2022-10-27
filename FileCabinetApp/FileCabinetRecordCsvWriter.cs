@@ -29,7 +29,7 @@ namespace FileCabinetApp
         /// <param name="record">Record to write.</param>
         public void Write(FileCabinetRecord record)
         {
-            this.textWriter.WriteLine($"{record.Id + 1}, {record.FirstName}, {record.LastName}, {record.Sex}, {record.Weight}, {record.Height}, {record.DateOfBirth.ToString("dd.mm.yyyy", CultureInfo.InvariantCulture)}");
+            this.textWriter.WriteLine($"{record.Id + 1}, {record.FirstName}, {record.LastName}, {record.Sex}, {record.Weight}, {record.Height}, {record.DateOfBirth.ToString("dd/mm/yyyy", CultureInfo.InvariantCulture)}");
         }
 
         /// <summary>

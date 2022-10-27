@@ -36,5 +36,21 @@ namespace FileCabinetApp
                 csvWriter.Write(record);
             }
         }
+
+        /// <summary>
+        /// Creates and utilizes FileCabinetRecordXmlWriter instance.
+        /// </summary>
+        /// <param name="streamWriter">StreamWriter to use.</param>
+        public void SaveToXml(StreamWriter streamWriter)
+        {
+            FileCabinetRecordXmlWriter xmlWriter = new (streamWriter);
+            xmlWriter.PrintOpeningText();
+            foreach (var record in this.records)
+            {
+                xmlWriter.Write(record);
+            }
+
+            xmlWriter.PrintClosingText();
+        }
     }
 }

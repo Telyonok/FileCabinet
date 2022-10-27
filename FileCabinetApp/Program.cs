@@ -252,6 +252,7 @@ namespace FileCabinetApp
                     snapshot.SaveToCsv(streamWriter);
                     break;
                 case "xml":
+                    snapshot.SaveToXml(streamWriter);
                     break;
                 default:
                     Console.WriteLine("Incorrect parameter");

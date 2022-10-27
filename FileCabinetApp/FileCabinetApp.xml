@@ -133,6 +133,33 @@
             Prints names of parameters.
             </summary>
         </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordXmlWriter">
+            <summary>
+            Provides methods for xml outputing.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.#ctor(System.IO.StreamWriter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordXmlWriter"/> class.
+            </summary>
+            <param name="textWriter">Stream to write to.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.Write(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Writes record's information to file.
+            </summary>
+            <param name="record">Record to write.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.PrintOpeningText">
+            <summary>
+            Prints xml file's processing instruction and 'record' opening tag.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.PrintClosingText">
+            <summary>
+            Prints xml file's processing instruction and 'record' opening tag.
+            </summary>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetService">
             <summary>
             Class <c>FileCabinetService</c> provides methods for creating, editting, listing,
@@ -218,6 +245,12 @@
         <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.SaveToCsv(System.IO.StreamWriter)">
             <summary>
             Creates and utilizes FileCabinetRecordCsvWriter instance.
+            </summary>
+            <param name="streamWriter">StreamWriter to use.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.SaveToXml(System.IO.StreamWriter)">
+            <summary>
+            Creates and utilizes FileCabinetRecordXmlWriter instance.
             </summary>
             <param name="streamWriter">StreamWriter to use.</param>
         </member>
