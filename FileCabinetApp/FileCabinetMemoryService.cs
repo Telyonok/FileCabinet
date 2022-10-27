@@ -9,7 +9,7 @@ namespace FileCabinetApp
     /// Class <c>FileCabinetService</c> provides methods for creating, editting, listing,
     /// finding and validating records.
     /// </summary>
-    public class FileCabinetService
+    public class FileCabinetMemoryService : IFileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new ();
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new ();
@@ -17,10 +17,10 @@ namespace FileCabinetApp
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new ();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FileCabinetService"/> class.
+        /// Initializes a new instance of the <see cref="FileCabinetMemoryService"/> class.
         /// </summary>
         /// <param name="validator">Set of validation methods.</param>
-        public FileCabinetService(IRecordValidator validator)
+        public FileCabinetMemoryService(IRecordValidator validator)
         {
             this.Validator = validator;
         }
@@ -33,10 +33,7 @@ namespace FileCabinetApp
         /// </value>
         public IRecordValidator Validator { get; }
 
-        /// <summary>
-        /// Creates a new record after validating user input and returns it id.
-        /// </summary>
-        /// <returns> Record's id. </returns>
+        /// <inheritdoc/>
         public int CreateRecord()
         {
             var record = new FileCabinetRecord();
@@ -62,10 +59,7 @@ namespace FileCabinetApp
             return record.Id;
         }
 
-        /// <summary>
-        /// Edits a record after validating new input.
-        /// </summary>
-        /// <param name="value">Record's number.</param>
+        /// <inheritdoc/>
         public void EditRecord(int value)
         {
             int id = value - 1;
@@ -105,29 +99,19 @@ namespace FileCabinetApp
             this.UpdateDictionaries(this.list[id]);
         }
 
-        /// <summary>
-        /// Gets an array with all records from the <c>list</c>.
-        /// </summary>
-        /// <returns> Array with all records. </returns>
+        /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
             return this.list.AsReadOnly();
         }
 
-        /// <summary>
-        /// Returns the amount of created records.
-        /// </summary>
-        /// <returns> Count of elements in <c>list</c>. </returns>
+        /// <inheritdoc/>
         public int GetStat()
         {
             return this.list.Count;
         }
 
-        /// <summary>
-        /// Returns all records with their first name equal to <c>firstName</c>.
-        /// </summary>
-        /// <param name="firstName">Name to search by.</param>
-        /// <returns> Array of all records with corresponding first name. </returns>
+        /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
         {
             if (!this.firstNameDictionary.ContainsKey(firstName))
@@ -138,11 +122,7 @@ namespace FileCabinetApp
             return this.firstNameDictionary[firstName].AsReadOnly();
         }
 
-        /// <summary>
-        /// Returns all records with their last name equal to <c>lastName</c>.
-        /// </summary>
-        /// <param name="lastName">Name to search by.</param>
-        /// <returns> Array of all records with corresponding last name. </returns>
+        /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
         {
             if (!this.lastNameDictionary.ContainsKey(lastName))
@@ -153,11 +133,7 @@ namespace FileCabinetApp
             return this.lastNameDictionary[lastName].AsReadOnly();
         }
 
-        /// <summary>
-        /// Returns all records with their date of birth equal to <c>dateOfBirth</c>.
-        /// </summary>
-        /// <param name="dateOfBirth">Date to search by.</param>
-        /// <returns> Array of all records with corresponding date of birth. </returns>
+        /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
             if (!this.dateOfBirthDictionary.ContainsKey(dateOfBirth))
@@ -166,6 +142,15 @@ namespace FileCabinetApp
             }
 
             return this.dateOfBirthDictionary[dateOfBirth].AsReadOnly();
+        }
+
+        /// <summary>
+        /// Creates a snapshot of current recordList.
+        /// </summary>
+        /// <returns>Created recordList snapshot.</returns>
+        public FileCabinetServiceSnapshot MakeSnapshot()
+        {
+            return new FileCabinetServiceSnapshot(this.list);
         }
 
         private static T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
@@ -211,7 +196,7 @@ namespace FileCabinetApp
         private static Tuple<bool, string, DateTime> InputToDateConverter(string input)
         {
             bool successful = true;
-            DateTime time;
+            DateTime time = DateTime.MinValue;
             try
             {
                 time = DateTime.Parse(input, CultureInfo.InvariantCulture);
@@ -221,12 +206,19 @@ namespace FileCabinetApp
                 successful = false;
             }
 
-            return Tuple.Create<bool, string, DateTime>(successful, "incorrect date format", DateTime.Parse(input, CultureInfo.InvariantCulture));
+            return Tuple.Create<bool, string, DateTime>(successful, "incorrect date format", time);
         }
 
         private static Tuple<bool, string, char> InputToSexConverter(string input)
         {
-            return Tuple.Create<bool, string, char>(!string.IsNullOrEmpty(input), "sex was null or empty", input[0]);
+            if (!string.IsNullOrEmpty(input))
+            {
+                return Tuple.Create<bool, string, char>(true, string.Empty, input[0]);
+            }
+            else
+            {
+                return Tuple.Create<bool, string, char>(false, "sex was null or empty", '?');
+            }
         }
 
         private static Tuple<bool, string, short> InputToWeightConverter(string input)
