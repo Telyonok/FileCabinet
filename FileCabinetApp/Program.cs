@@ -305,23 +305,43 @@ namespace FileCabinetApp
                 }
             }
 
+            bool usingFileSystem = splittedParameters.Contains<string>("file");
             splittedParameters[^1] = splittedParameters[^1][1..^1];
 
             switch (splittedParameters[^2])
             {
                 case "firstname":
-                    ListRecordArray(fileCabinetMemoryService.FindByFirstName(splittedParameters[^1]));
-                    break;
-                case "lastname":
-                    ListRecordArray(fileCabinetMemoryService.FindByLastName(splittedParameters[^1]));
-                    break;
-                case "dateofbirth":
-                    if (!DateTime.TryParse(splittedParameters[^1], out DateTime date))
+                    if (usingFileSystem)
                     {
-                        Console.WriteLine("Incorrect date value");
+                        ListRecordArray(fileCabinetFilesystemService.FindByFirstName(splittedParameters[^1]));
+                    }
+                    else
+                    {
+                        ListRecordArray(fileCabinetMemoryService.FindByFirstName(splittedParameters[^1]));
                     }
 
-                    ListRecordArray(fileCabinetMemoryService.FindByDateOfBirth(date));
+                    break;
+                case "lastname":
+                    if (usingFileSystem)
+                    {
+                        ListRecordArray(fileCabinetFilesystemService.FindByLastName(splittedParameters[^1]));
+                    }
+                    else
+                    {
+                        ListRecordArray(fileCabinetMemoryService.FindByLastName(splittedParameters[^1]));
+                    }
+
+                    break;
+                case "dateofbirth":
+                    if (usingFileSystem)
+                    {
+                        ListRecordArray(fileCabinetFilesystemService.FindByDateOfBirth(DateTime.Parse(splittedParameters[^1], CultureInfo.InvariantCulture)));
+                    }
+                    else
+                    {
+                        ListRecordArray(fileCabinetMemoryService.FindByDateOfBirth(DateTime.Parse(splittedParameters[^1], CultureInfo.InvariantCulture)));
+                    }
+
                     break;
                 default:
                     Console.WriteLine("Incorrect parameter");
