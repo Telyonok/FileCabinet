@@ -55,16 +55,23 @@
             Receives input and provides output of records to a file.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetFilesystemService.#ctor(System.IO.FileStream)">
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.#ctor(System.IO.FileStream,FileCabinetApp.IRecordValidator)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetFilesystemService"/> class.
             </summary>
             <param name="fileStream">File to work with.</param>
+            <param name="validator">Set of validation methods.</param>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetFilesystemService.CreateRecord">
+        <member name="P:FileCabinetApp.FileCabinetFilesystemService.Validator">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetFilesystemService.EditRecord(System.Int32)">
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.GetServiceName">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.CreateRecord(FileCabinetApp.InputDataSet)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.EditRecord(System.Int32,FileCabinetApp.InputDataSet)">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.FindByDateOfBirth(System.DateTime)">
@@ -82,6 +89,9 @@
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.GetStat">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.MakeSnapshot">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetMemoryService">
             <summary>
             Class <c>FileCabinetService</c> provides methods for creating, editting, listing,
@@ -94,18 +104,16 @@
             </summary>
             <param name="validator">Set of validation methods.</param>
         </member>
-        <member name="P:FileCabinetApp.FileCabinetMemoryService.Validator">
-            <summary>
-            Gets validator used by the service.
-            </summary>
-            <value>
-            validator.
-            </value>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetMemoryService.CreateRecord">
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.GetServiceName">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetMemoryService.EditRecord(System.Int32)">
+        <member name="P:FileCabinetApp.FileCabinetMemoryService.Validator">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.CreateRecord(FileCabinetApp.InputDataSet)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.EditRecord(System.Int32,FileCabinetApp.InputDataSet)">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.GetRecords">
@@ -124,19 +132,35 @@
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.MakeSnapshot">
-            <summary>
-            Creates a snapshot of current recordList.
-            </summary>
-            <returns>Created recordList snapshot.</returns>
+            <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
             <summary>
             Class <c>FileCabinetRecord</c> stores information about a person.
             </summary>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetRecord.#ctor(System.Int32,System.String,System.String,System.Char,System.Int16,System.Decimal,System.DateTime)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecord"/> class.
+            </summary>
+            <param name="id">Record's id.</param>
+            <param name="firstName">Person's firstname.</param>
+            <param name="lastName">Person's lastname.</param>
+            <param name="sex">Person's sex.</param>
+            <param name="weight">Person's weight in kg.</param>
+            <param name="height">Person's height in cm.</param>
+            <param name="dateOfBirth">Person's date of birth.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecord.#ctor(System.Int32,FileCabinetApp.InputDataSet)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecord"/> class.
+            </summary>
+            <param name="id">Record's id.</param>
+            <param name="dataSet">Input data set.</param>
+        </member>
         <member name="P:FileCabinetApp.FileCabinetRecord.Id">
             <summary>
-            Gets or sets id value.
+            Gets id value.
             </summary>
             <value>
             id represents record's identification number.
@@ -144,7 +168,7 @@
         </member>
         <member name="P:FileCabinetApp.FileCabinetRecord.FirstName">
             <summary>
-            Gets or sets firstName value.
+            Gets firstName value.
             </summary>
             <value>
             firstName represents person's first name.
@@ -152,7 +176,7 @@
         </member>
         <member name="P:FileCabinetApp.FileCabinetRecord.LastName">
             <summary>
-            Gets or sets lastName value.
+            Gets lastName value.
             </summary>
             <value>
             lastName represents person's last name.
@@ -160,7 +184,7 @@
         </member>
         <member name="P:FileCabinetApp.FileCabinetRecord.Sex">
             <summary>
-            Gets or sets sex value.
+            Gets sex value.
             </summary>
             <value>
             sex represents person's sex.
@@ -168,7 +192,7 @@
         </member>
         <member name="P:FileCabinetApp.FileCabinetRecord.Weight">
             <summary>
-            Gets or sets weight value.
+            Gets weight value.
             </summary>
             <value>
             weight represents person's weight in kilograms.
@@ -176,7 +200,7 @@
         </member>
         <member name="P:FileCabinetApp.FileCabinetRecord.Height">
             <summary>
-            Gets or sets height value.
+            Gets height value.
             </summary>
             <value>
             height represents person's height in cm.
@@ -184,7 +208,7 @@
         </member>
         <member name="P:FileCabinetApp.FileCabinetRecord.DateOfBirth">
             <summary>
-            Gets or sets dateOfBirth value.
+            Gets dateOfBirth value.
             </summary>
             <value>
             dateOfBirth represents person's date of birth.
@@ -267,17 +291,33 @@
             Provides methods for record creation, editing and storage.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.IFileCabinetService.CreateRecord">
+        <member name="P:FileCabinetApp.IFileCabinetService.Validator">
+            <summary>
+            Gets validator value.
+            </summary>
+            <value>
+            Set of validation rules.
+            </value>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.GetServiceName">
+            <summary>
+            Gets name of the service.
+            </summary>
+            <returns>Service name.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.CreateRecord(FileCabinetApp.InputDataSet)">
             <summary>
             Creates a new record after validating user input and returns it id.
             </summary>
+            <param name="dataSet">Input user data.</param>
             <returns> Record's id. </returns>
         </member>
-        <member name="M:FileCabinetApp.IFileCabinetService.EditRecord(System.Int32)">
+        <member name="M:FileCabinetApp.IFileCabinetService.EditRecord(System.Int32,FileCabinetApp.InputDataSet)">
             <summary>
             Edits a record after validating new input.
             </summary>
-            <param name="value">Record's number.</param>
+            <param name="value">Record's order number.</param>
+            <param name="dataSet">Input user data.</param>
         </member>
         <member name="M:FileCabinetApp.IFileCabinetService.GetRecords">
             <summary>
@@ -311,6 +351,76 @@
             </summary>
             <param name="dateOfBirth">Date to search by.</param>
             <returns> Array of all records with corresponding date of birth. </returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.MakeSnapshot">
+            <summary>
+            Creates a snapshot of current recordList.
+            </summary>
+            <returns>Created recordList snapshot.</returns>
+        </member>
+        <member name="T:FileCabinetApp.InputDataSet">
+            <summary>
+            Set of input data.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.InputDataSet.#ctor(System.String,System.String,System.Char,System.Int16,System.Decimal,System.DateTime)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.InputDataSet"/> class.
+            </summary>
+            <param name="firstName">Person's firstname.</param>
+            <param name="lastName">Person's lastname.</param>
+            <param name="sex">Person's sex.</param>
+            <param name="weight">Person's weight in kg.</param>
+            <param name="height">Person's height in cm.</param>
+            <param name="dateOfBirth">Person's date of birth.</param>
+        </member>
+        <member name="P:FileCabinetApp.InputDataSet.FirstName">
+            <summary>
+            Gets Person's firstname.
+            </summary>
+            <value>
+            Person's firstname.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.InputDataSet.LastName">
+            <summary>
+            Gets Person's lastname.
+            </summary>
+            <value>
+            Person's lastname.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.InputDataSet.Sex">
+            <summary>
+            Gets Person's sex.
+            </summary>
+            <value>
+            Person's sex.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.InputDataSet.Weight">
+            <summary>
+            Gets Person's weight in kg.
+            </summary>
+            <value>
+            Person's weight.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.InputDataSet.Height">
+            <summary>
+            Gets Person's height in cm.
+            </summary>
+            <value>
+            Person's height.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.InputDataSet.DateOfBirth">
+            <summary>
+            Gets Person's date of birth.
+            </summary>
+            <value>
+            Person's date of birth.
+            </value>
         </member>
         <member name="T:FileCabinetApp.InputMode">
             <summary>
@@ -383,6 +493,22 @@
             Accepts input and calls corresponding methods.
             </summary>
             <param name="args">Command line arguments.</param>
+        </member>
+        <member name="T:FileCabinetApp.Properties.Resources">
+            <summary>
+              Класс ресурса со строгой типизацией для поиска локализованных строк и т.д.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.Properties.Resources.ResourceManager">
+            <summary>
+              Возвращает кэшированный экземпляр ResourceManager, использованный этим классом.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.Properties.Resources.Culture">
+            <summary>
+              Перезаписывает свойство CurrentUICulture текущего потока для всех
+              обращений к ресурсу с помощью этого класса ресурса со строгой типизацией.
+            </summary>
         </member>
     </members>
 </doc>

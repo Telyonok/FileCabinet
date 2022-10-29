@@ -18,19 +18,30 @@ namespace FileCabinetApp
         /// Initializes a new instance of the <see cref="FileCabinetFilesystemService"/> class.
         /// </summary>
         /// <param name="fileStream">File to work with.</param>
-        public FileCabinetFilesystemService(FileStream fileStream)
+        /// <param name="validator">Set of validation methods.</param>
+        public FileCabinetFilesystemService(FileStream fileStream, IRecordValidator validator)
         {
             this.fileStream = fileStream;
+            this.Validator = validator;
         }
 
         /// <inheritdoc/>
-        public int CreateRecord()
+        public IRecordValidator Validator { get; }
+
+        /// <inheritdoc/>
+        public string GetServiceName()
+        {
+            return "filesystem";
+        }
+
+        /// <inheritdoc/>
+        public int CreateRecord(InputDataSet dataSet)
         {
             throw new NotImplementedException();
         }
 
         /// <inheritdoc/>
-        public void EditRecord(int value)
+        public void EditRecord(int value, InputDataSet dataSet)
         {
             throw new NotImplementedException();
         }
@@ -61,6 +72,12 @@ namespace FileCabinetApp
 
         /// <inheritdoc/>
         public int GetStat()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
+        public FileCabinetServiceSnapshot MakeSnapshot()
         {
             throw new NotImplementedException();
         }

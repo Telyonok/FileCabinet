@@ -45,8 +45,7 @@ namespace FileCabinetApp
 
         private static bool isRunning = true;
 
-        private static FileCabinetMemoryService fileCabinetMemoryService = new (new DefaultValidator());
-        private static FileCabinetFilesystemService fileCabinetFilesystemService = new (new FileStream("cabinet-records.db", FileMode.OpenOrCreate, FileAccess.ReadWrite));
+        private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService(new DefaultValidator());
 
         /// <summary>
         /// Accepts input and calls corresponding methods.
@@ -56,7 +55,8 @@ namespace FileCabinetApp
         {
             ApplyLaunchArguments(args.Select(arg => arg.ToLower(CultureInfo.InvariantCulture)).ToArray());
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
-            Console.WriteLine($"Using {fileCabinetMemoryService.Validator.GetValidatorName()} validation rules.");
+            Console.WriteLine($"Using {fileCabinetService.GetServiceName()} service.");
+            Console.WriteLine($"Using {fileCabinetService.Validator.GetValidatorName()} validation rules.");
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
 
@@ -93,13 +93,13 @@ namespace FileCabinetApp
         {
             return command switch
             {
-                "FileCabinetApp" => new ReadOnlyCollection<string>(new List<string> { "--validation-rules=custom", "--validation-rules=default", "-v" }),
-                "create" => new ReadOnlyCollection<string>(new List<string> { "--storage", "-s" }),
-                "edit" => new ReadOnlyCollection<string>(new List<string> { "--storage", "-s" }),
-                "find" => new ReadOnlyCollection<string>(new List<string> { "--storage", "-s" }),
-                "stat" => new ReadOnlyCollection<string>(new List<string> { "--storage", "-s" }),
-                "list" => new ReadOnlyCollection<string>(new List<string> { "--storage", "-s" }),
-                _ => new ReadOnlyCollection<string>(Enumerable.Empty<string>().ToList()),
+                "FileCabinetApp" => new ReadOnlyCollection<string>(new List<string> { "--validation-rules=custom", "--validation-rules=default", "-v", "--storage", "-s" }),
+                "create" => new ReadOnlyCollection<string>(new List<string> { }),
+                "edit" => new ReadOnlyCollection<string>(new List<string> { }),
+                "find" => new ReadOnlyCollection<string>(new List<string> { }),
+                "stat" => new ReadOnlyCollection<string>(new List<string> { }),
+                "list" => new ReadOnlyCollection<string>(new List<string> { }),
+                _ => new ReadOnlyCollection<string>(new List<string> { }),
             };
         }
 
@@ -124,7 +124,7 @@ namespace FileCabinetApp
                 "-s" => new ReadOnlyCollection<string>(new List<string> { "memory", "file" }),
                 "--validation-rule" => new ReadOnlyCollection<string>(new List<string> { "custom", "default" }),
                 "-v" => new ReadOnlyCollection<string>(new List<string> { "custom", "default" }),
-                _ => new ReadOnlyCollection<string>(Enumerable.Empty<string>().ToList()),
+                _ => new ReadOnlyCollection<string>(new List<string> { }),
             };
         }
 
@@ -195,14 +195,7 @@ namespace FileCabinetApp
 
             int recordsCount;
 
-            if (splittedParameters.Contains<string>("file"))
-            {
-                recordsCount = fileCabinetFilesystemService.GetStat();
-            }
-            else
-            {
-                recordsCount = fileCabinetMemoryService.GetStat();
-            }
+            recordsCount = fileCabinetService.GetStat();
 
             Console.WriteLine($"{recordsCount} record(s).");
         }
@@ -215,14 +208,7 @@ namespace FileCabinetApp
                 return;
             }
 
-            if (splittedParameters.Contains<string>("file"))
-            {
-                fileCabinetFilesystemService.CreateRecord();
-            }
-            else
-            {
-                fileCabinetMemoryService.CreateRecord();
-            }
+            fileCabinetService.CreateRecord(GetUserInputData());
         }
 
         private static void List(string parameters)
@@ -233,14 +219,7 @@ namespace FileCabinetApp
                 return;
             }
 
-            if (splittedParameters.Contains<string>("file"))
-            {
-                ListRecordArray(fileCabinetFilesystemService.GetRecords());
-            }
-            else
-            {
-                ListRecordArray(fileCabinetMemoryService.GetRecords());
-            }
+            ListRecordArray(fileCabinetService.GetRecords());
         }
 
         private static void Edit(string parameters)
@@ -266,20 +245,13 @@ namespace FileCabinetApp
                 return;
             }
 
-            if (fileCabinetMemoryService.GetStat() < value || value < 1)
+            if (fileCabinetService.GetStat() < value || value < 1)
             {
                 Console.WriteLine($"#{value} record is not found.");
                 return;
             }
 
-            if (splittedParameters.Contains<string>("file"))
-            {
-                fileCabinetFilesystemService.EditRecord(value);
-            }
-            else
-            {
-                fileCabinetMemoryService.EditRecord(value);
-            }
+            fileCabinetService.EditRecord(value, GetUserInputData());
         }
 
         private static void Find(string parameters)
@@ -305,43 +277,18 @@ namespace FileCabinetApp
                 }
             }
 
-            bool usingFileSystem = splittedParameters.Contains<string>("file");
             splittedParameters[^1] = splittedParameters[^1][1..^1];
 
             switch (splittedParameters[^2])
             {
                 case "firstname":
-                    if (usingFileSystem)
-                    {
-                        ListRecordArray(fileCabinetFilesystemService.FindByFirstName(splittedParameters[^1]));
-                    }
-                    else
-                    {
-                        ListRecordArray(fileCabinetMemoryService.FindByFirstName(splittedParameters[^1]));
-                    }
-
+                    ListRecordArray(fileCabinetService.FindByFirstName(splittedParameters[^1]));
                     break;
                 case "lastname":
-                    if (usingFileSystem)
-                    {
-                        ListRecordArray(fileCabinetFilesystemService.FindByLastName(splittedParameters[^1]));
-                    }
-                    else
-                    {
-                        ListRecordArray(fileCabinetMemoryService.FindByLastName(splittedParameters[^1]));
-                    }
-
+                    ListRecordArray(fileCabinetService.FindByLastName(splittedParameters[^1]));
                     break;
                 case "dateofbirth":
-                    if (usingFileSystem)
-                    {
-                        ListRecordArray(fileCabinetFilesystemService.FindByDateOfBirth(DateTime.Parse(splittedParameters[^1], CultureInfo.InvariantCulture)));
-                    }
-                    else
-                    {
-                        ListRecordArray(fileCabinetMemoryService.FindByDateOfBirth(DateTime.Parse(splittedParameters[^1], CultureInfo.InvariantCulture)));
-                    }
-
+                    ListRecordArray(fileCabinetService.FindByDateOfBirth(DateTime.Parse(splittedParameters[^1], CultureInfo.InvariantCulture)));
                     break;
                 default:
                     Console.WriteLine("Incorrect parameter");
@@ -388,7 +335,7 @@ namespace FileCabinetApp
                 return;
             }
 
-            FileCabinetServiceSnapshot snapshot = fileCabinetMemoryService.MakeSnapshot();
+            FileCabinetServiceSnapshot snapshot = fileCabinetService.MakeSnapshot();
             switch (splittedString[0])
             {
                 case "csv":
@@ -423,13 +370,23 @@ namespace FileCabinetApp
                 throw new ArgumentException("Invalid argument input", nameof(args));
             }
 
+            IRecordValidator validator;
             if (args.Contains<string>("custom") || args.Contains<string>("--validation-rules=custom"))
             {
-                fileCabinetMemoryService = new FileCabinetMemoryService(new CustomValidator());
+                validator = new CustomValidator();
             }
             else
             {
-                fileCabinetMemoryService = new FileCabinetMemoryService(new DefaultValidator());
+                validator = new DefaultValidator();
+            }
+
+            if (args.Contains<string>("file"))
+            {
+                fileCabinetService = new FileCabinetFilesystemService(new FileStream("cabinet-records.db", FileMode.OpenOrCreate, FileAccess.ReadWrite), validator);
+            }
+            else
+            {
+                fileCabinetService = new FileCabinetMemoryService(validator);
             }
         }
 
@@ -493,6 +450,104 @@ namespace FileCabinetApp
             }
 
             return true;
+        }
+
+        private static T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
+        {
+            do
+            {
+                T value;
+
+                var input = Console.ReadLine();
+                if (input == null)
+                {
+                    Console.WriteLine($"Conversion failed: input was empty. Please, correct your input.");
+                    continue;
+                }
+
+                var conversionResult = converter(input);
+
+                if (!conversionResult.Item1)
+                {
+                    Console.WriteLine($"Conversion failed: {conversionResult.Item2}. Please, correct your input.");
+                    continue;
+                }
+
+                value = conversionResult.Item3;
+
+                var validationResult = validator(value);
+                if (!validationResult.Item1)
+                {
+                    Console.WriteLine($"Validation failed: {validationResult.Item2}. Please, correct your input.");
+                    continue;
+                }
+
+                return value;
+            }
+            while (true);
+        }
+
+        private static Tuple<bool, string, string> InputToNameConverter(string input)
+        {
+            return Tuple.Create<bool, string, string>(!string.IsNullOrEmpty(input), "name was null or empty", input);
+        }
+
+        private static Tuple<bool, string, DateTime> InputToDateConverter(string input)
+        {
+            bool successful = true;
+            DateTime time = DateTime.MinValue;
+            try
+            {
+                time = DateTime.Parse(input, CultureInfo.InvariantCulture);
+            }
+            catch
+            {
+                successful = false;
+            }
+
+            return Tuple.Create<bool, string, DateTime>(successful, "incorrect date format", time);
+        }
+
+        private static Tuple<bool, string, char> InputToSexConverter(string input)
+        {
+            if (!string.IsNullOrEmpty(input))
+            {
+                return Tuple.Create<bool, string, char>(true, string.Empty, input[0]);
+            }
+            else
+            {
+                return Tuple.Create<bool, string, char>(false, "sex was null or empty", '?');
+            }
+        }
+
+        private static Tuple<bool, string, short> InputToWeightConverter(string input)
+        {
+            bool succesful = short.TryParse(input, out short weight);
+            return Tuple.Create<bool, string, short>(succesful, "weight was null or empty", weight);
+        }
+
+        private static Tuple<bool, string, decimal> InputToHeightConverter(string input)
+        {
+            bool succesful = decimal.TryParse(input, out decimal height);
+            return Tuple.Create<bool, string, decimal>(succesful, "weight was null or empty", height);
+        }
+
+        private static InputDataSet GetUserInputData()
+        {
+            Console.Write("First name: ");
+            string firstName = ReadInput<string>(InputToNameConverter, fileCabinetService.Validator.ValidateNameString);
+            Console.Write("Last name: ");
+            string lastName = ReadInput<string>(InputToNameConverter, fileCabinetService.Validator.ValidateNameString);
+            Console.Write("Sex: ");
+            char sex = ReadInput<char>(InputToSexConverter, fileCabinetService.Validator.ValidateSex);
+            Console.Write("Weight: ");
+            short weight = ReadInput<short>(InputToWeightConverter, fileCabinetService.Validator.ValidateWeight);
+            Console.Write("Height: ");
+            decimal height = ReadInput<decimal>(InputToHeightConverter, fileCabinetService.Validator.ValidateHeight);
+            Console.Write("Date of birth: ");
+            DateTime dateOfBirth = ReadInput<DateTime>(InputToDateConverter, fileCabinetService.Validator.ValidateDateTime);
+
+            return new InputDataSet(firstName, lastName, sex, weight, height, dateOfBirth);
         }
     }
 }

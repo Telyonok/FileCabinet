@@ -14,16 +14,32 @@ namespace FileCabinetApp
     internal interface IFileCabinetService
     {
         /// <summary>
+        /// Gets validator value.
+        /// </summary>
+        /// <value>
+        /// Set of validation rules.
+        /// </value>
+        public IRecordValidator Validator { get; }
+
+        /// <summary>
+        /// Gets name of the service.
+        /// </summary>
+        /// <returns>Service name.</returns>
+        public string GetServiceName();
+
+        /// <summary>
         /// Creates a new record after validating user input and returns it id.
         /// </summary>
+        /// <param name="dataSet">Input user data.</param>
         /// <returns> Record's id. </returns>
-        public int CreateRecord();
+        public int CreateRecord(InputDataSet dataSet);
 
         /// <summary>
         /// Edits a record after validating new input.
         /// </summary>
-        /// <param name="value">Record's number.</param>
-        public void EditRecord(int value);
+        /// <param name="value">Record's order number.</param>
+        /// <param name="dataSet">Input user data.</param>
+        public void EditRecord(int value, InputDataSet dataSet);
 
         /// <summary>
         /// Gets an array with all records from the <c>list</c>.
@@ -57,5 +73,11 @@ namespace FileCabinetApp
         /// <param name="dateOfBirth">Date to search by.</param>
         /// <returns> Array of all records with corresponding date of birth. </returns>
         public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth);
+
+        /// <summary>
+        /// Creates a snapshot of current recordList.
+        /// </summary>
+        /// <returns>Created recordList snapshot.</returns>
+        public FileCabinetServiceSnapshot MakeSnapshot();
     }
 }
