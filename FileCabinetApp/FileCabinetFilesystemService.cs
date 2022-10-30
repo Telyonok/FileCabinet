@@ -46,32 +46,7 @@ namespace FileCabinetApp
 
             this.fileStream.Write(BitConverter.GetBytes(status), 0, 2);
             this.fileStream.Write(BitConverter.GetBytes(this.recordCount), 0, 4);
-            char[] firstNameArray = new char[120];
-            for (int i = 0; i < dataSet.FirstName.Length; i++)
-            {
-                firstNameArray[i] = (char)dataSet.FirstName[i];
-            }
-
-            char[] lastNameArray = new char[120];
-            for (int i = 0; i < dataSet.LastName.Length; i++)
-            {
-                lastNameArray[i] = (char)dataSet.LastName[i];
-            }
-
-            this.fileStream.Write(Encoding.Default.GetBytes(firstNameArray), 0, 120);
-            this.fileStream.Write(Encoding.Default.GetBytes(lastNameArray), 0, 120);
-            this.fileStream.Write(BitConverter.GetBytes(dataSet.Sex), 0, 1);
-            this.fileStream.Write(BitConverter.GetBytes(dataSet.Weight), 0, 2);
-
-            int[] intHeight = decimal.GetBits(dataSet.Height);
-            for (int i = 0; i < 4; i++)
-            {
-                this.fileStream.Write(BitConverter.GetBytes(intHeight[i]), 0, 4);
-            }
-
-            this.fileStream.Write(BitConverter.GetBytes(dataSet.DateOfBirth.Year), 0, 4);
-            this.fileStream.Write(BitConverter.GetBytes(dataSet.DateOfBirth.Month), 0, 4);
-            this.fileStream.Write(BitConverter.GetBytes(dataSet.DateOfBirth.Day), 0, 4);
+            this.WriteToStream(dataSet);
 
             this.recordCount++;
             return this.recordCount - 1;
@@ -80,7 +55,19 @@ namespace FileCabinetApp
         /// <inheritdoc/>
         public void EditRecord(int value, InputDataSet dataSet)
         {
-            throw new NotImplementedException();
+            byte[] buffer = new byte[4];
+            int currentValue;
+            int j = 0;
+            do
+            {
+                this.fileStream.Position = (j * RecordSize) + 2;
+                this.fileStream.Read(buffer, 0, buffer.Length);
+                currentValue = BitConverter.ToInt32(buffer);
+                j++;
+            }
+            while (currentValue != value - 1);
+
+            this.WriteToStream(dataSet);
         }
 
         /// <inheritdoc/>
@@ -146,6 +133,36 @@ namespace FileCabinetApp
             this.fileStream.Flush();
             this.fileStream.Close();
             this.fileStream.Dispose();
+        }
+
+        private void WriteToStream(InputDataSet dataSet)
+        {
+            char[] firstNameArray = new char[120];
+            for (int i = 0; i < dataSet.FirstName.Length; i++)
+            {
+                firstNameArray[i] = (char)dataSet.FirstName[i];
+            }
+
+            char[] lastNameArray = new char[120];
+            for (int i = 0; i < dataSet.LastName.Length; i++)
+            {
+                lastNameArray[i] = (char)dataSet.LastName[i];
+            }
+
+            this.fileStream.Write(Encoding.Default.GetBytes(firstNameArray), 0, 120);
+            this.fileStream.Write(Encoding.Default.GetBytes(lastNameArray), 0, 120);
+            this.fileStream.Write(BitConverter.GetBytes(dataSet.Sex), 0, 1);
+            this.fileStream.Write(BitConverter.GetBytes(dataSet.Weight), 0, 2);
+
+            int[] intHeight = decimal.GetBits(dataSet.Height);
+            for (int i = 0; i < 4; i++)
+            {
+                this.fileStream.Write(BitConverter.GetBytes(intHeight[i]), 0, 4);
+            }
+
+            this.fileStream.Write(BitConverter.GetBytes(dataSet.DateOfBirth.Year), 0, 4);
+            this.fileStream.Write(BitConverter.GetBytes(dataSet.DateOfBirth.Month), 0, 4);
+            this.fileStream.Write(BitConverter.GetBytes(dataSet.DateOfBirth.Day), 0, 4);
         }
     }
 }
