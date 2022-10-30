@@ -104,7 +104,7 @@ namespace FileCabinetApp
         /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            List<FileCabinetRecord> records = new List<FileCabinetRecord>();
+            List<FileCabinetRecord> records = new ();
             this.fileStream.Position = 0;
             for (int i = 0; i < this.recordCount; i++)
             {
@@ -120,8 +120,8 @@ namespace FileCabinetApp
                 int year = BitConverter.ToInt32(buffer.AsSpan()[265..269]);
                 int month = BitConverter.ToInt32(buffer.AsSpan()[269..273]);
                 int day = BitConverter.ToInt32(buffer.AsSpan()[273..277]);
-                DateTime date = new DateTime(year, month, day);
-                FileCabinetRecord record = new FileCabinetRecord(id, firstName, lastName, sex, weight, height, date);
+                DateTime date = new (year, month, day);
+                FileCabinetRecord record = new (id, firstName, lastName, sex, weight, height, date);
                 records.Add(record);
             }
 
@@ -131,7 +131,7 @@ namespace FileCabinetApp
         /// <inheritdoc/>
         public int GetStat()
         {
-            throw new NotImplementedException();
+            return this.recordCount;
         }
 
         /// <inheritdoc/>
