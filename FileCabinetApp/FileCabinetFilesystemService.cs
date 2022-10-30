@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -102,7 +104,28 @@ namespace FileCabinetApp
         /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            throw new NotImplementedException();
+            List<FileCabinetRecord> records = new List<FileCabinetRecord>();
+            this.fileStream.Position = 0;
+            for (int i = 0; i < this.recordCount; i++)
+            {
+                byte[] buffer = new byte[277];
+                this.fileStream.Read(buffer, 0, buffer.Length);
+                short status = BitConverter.ToInt16(buffer.AsSpan()[..2]);
+                int id = BitConverter.ToInt32(buffer.AsSpan()[2..6]);
+                string firstName = Encoding.UTF8.GetString(buffer[6..126]).Replace("\0", string.Empty, StringComparison.InvariantCulture);
+                string lastName = Encoding.UTF8.GetString(buffer[126..246]).Replace("\0", string.Empty, StringComparison.InvariantCulture);
+                char sex = Encoding.UTF8.GetString(buffer[246..247])[0];
+                short weight = BitConverter.ToInt16(buffer.AsSpan()[247..249]);
+                decimal height = BitConverter.ToInt32(buffer.AsSpan()[249..265]);
+                int year = BitConverter.ToInt32(buffer.AsSpan()[265..269]);
+                int month = BitConverter.ToInt32(buffer.AsSpan()[269..273]);
+                int day = BitConverter.ToInt32(buffer.AsSpan()[273..277]);
+                DateTime date = new DateTime(year, month, day);
+                FileCabinetRecord record = new FileCabinetRecord(id, firstName, lastName, sex, weight, height, date);
+                records.Add(record);
+            }
+
+            return new ReadOnlyCollection<FileCabinetRecord>(records);
         }
 
         /// <inheritdoc/>
