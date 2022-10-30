@@ -26,13 +26,13 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
+        public IRecordValidator Validator { get; }
+
+        /// <inheritdoc/>
         public string GetServiceName()
         {
             return "memory";
         }
-
-        /// <inheritdoc/>
-        public IRecordValidator Validator { get; }
 
         /// <inheritdoc/>
         public int CreateRecord(InputDataSet dataSet)
@@ -114,6 +114,12 @@ namespace FileCabinetApp
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
             return new FileCabinetServiceSnapshot(this.list);
+        }
+
+        /// <inheritdoc/>
+        public void Finish()
+        {
+            return;
         }
 
         private void UpdateDictionaries(FileCabinetRecord record)

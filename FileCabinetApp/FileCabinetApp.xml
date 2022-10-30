@@ -92,6 +92,9 @@
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.MakeSnapshot">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.Finish">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetMemoryService">
             <summary>
             Class <c>FileCabinetService</c> provides methods for creating, editting, listing,
@@ -104,10 +107,10 @@
             </summary>
             <param name="validator">Set of validation methods.</param>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetMemoryService.GetServiceName">
+        <member name="P:FileCabinetApp.FileCabinetMemoryService.Validator">
             <inheritdoc/>
         </member>
-        <member name="P:FileCabinetApp.FileCabinetMemoryService.Validator">
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.GetServiceName">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.CreateRecord(FileCabinetApp.InputDataSet)">
@@ -132,6 +135,9 @@
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.MakeSnapshot">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.Finish">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
@@ -357,6 +363,11 @@
             Creates a snapshot of current recordList.
             </summary>
             <returns>Created recordList snapshot.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.Finish">
+            <summary>
+            Service cleans after itself and finishes it's work.
+            </summary>
         </member>
         <member name="T:FileCabinetApp.InputDataSet">
             <summary>

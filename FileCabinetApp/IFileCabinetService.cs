@@ -79,5 +79,10 @@ namespace FileCabinetApp
         /// </summary>
         /// <returns>Created recordList snapshot.</returns>
         public FileCabinetServiceSnapshot MakeSnapshot();
+
+        /// <summary>
+        /// Service cleans after itself and finishes it's work.
+        /// </summary>
+        public void Finish();
     }
 }

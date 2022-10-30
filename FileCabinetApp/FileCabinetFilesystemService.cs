@@ -12,7 +12,9 @@ namespace FileCabinetApp
     /// </summary>
     internal class FileCabinetFilesystemService : IFileCabinetService
     {
+        private const int RecordSize = 277;
         private readonly FileStream fileStream;
+        private int recordCount;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetFilesystemService"/> class.
@@ -23,6 +25,7 @@ namespace FileCabinetApp
         {
             this.fileStream = fileStream;
             this.Validator = validator;
+            this.recordCount = 0;
         }
 
         /// <inheritdoc/>
@@ -37,7 +40,39 @@ namespace FileCabinetApp
         /// <inheritdoc/>
         public int CreateRecord(InputDataSet dataSet)
         {
-            throw new NotImplementedException();
+            short status = 0;
+
+            this.fileStream.Write(BitConverter.GetBytes(status), 0, 2);
+            this.fileStream.Write(BitConverter.GetBytes(this.recordCount), 0, 4);
+            char[] firstNameArray = new char[120];
+            for (int i = 0; i < dataSet.FirstName.Length; i++)
+            {
+                firstNameArray[i] = (char)dataSet.FirstName[i];
+            }
+
+            char[] lastNameArray = new char[120];
+            for (int i = 0; i < dataSet.LastName.Length; i++)
+            {
+                lastNameArray[i] = (char)dataSet.LastName[i];
+            }
+
+            this.fileStream.Write(Encoding.Default.GetBytes(firstNameArray), 0, 120);
+            this.fileStream.Write(Encoding.Default.GetBytes(lastNameArray), 0, 120);
+            this.fileStream.Write(BitConverter.GetBytes(dataSet.Sex), 0, 1);
+            this.fileStream.Write(BitConverter.GetBytes(dataSet.Weight), 0, 2);
+
+            int[] intHeight = decimal.GetBits(dataSet.Height);
+            for (int i = 0; i < 4; i++)
+            {
+                this.fileStream.Write(BitConverter.GetBytes(intHeight[i]), 0, 4);
+            }
+
+            this.fileStream.Write(BitConverter.GetBytes(dataSet.DateOfBirth.Year), 0, 4);
+            this.fileStream.Write(BitConverter.GetBytes(dataSet.DateOfBirth.Month), 0, 4);
+            this.fileStream.Write(BitConverter.GetBytes(dataSet.DateOfBirth.Day), 0, 4);
+
+            this.recordCount++;
+            return this.recordCount - 1;
         }
 
         /// <inheritdoc/>
@@ -80,6 +115,14 @@ namespace FileCabinetApp
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
             throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
+        public void Finish()
+        {
+            this.fileStream.Flush();
+            this.fileStream.Close();
+            this.fileStream.Dispose();
         }
     }
 }

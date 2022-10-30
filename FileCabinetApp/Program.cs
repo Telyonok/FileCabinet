@@ -183,6 +183,7 @@ namespace FileCabinetApp
         {
             Console.WriteLine("Exiting an application...");
             isRunning = false;
+            fileCabinetService.Finish();
         }
 
         private static void Stat(string parameters)
