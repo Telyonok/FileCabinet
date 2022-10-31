@@ -289,7 +289,15 @@ namespace FileCabinetApp
                     ListRecordArray(fileCabinetService.FindByLastName(splittedParameters[^1]));
                     break;
                 case "dateofbirth":
-                    ListRecordArray(fileCabinetService.FindByDateOfBirth(DateTime.Parse(splittedParameters[^1], CultureInfo.InvariantCulture)));
+                    if (DateTime.TryParse(splittedParameters[^1], out DateTime date))
+                    {
+                        ListRecordArray(fileCabinetService.FindByDateOfBirth(date));
+                    }
+                    else
+                    {
+                        Console.WriteLine("Incorrect parameter");
+                    }
+
                     break;
                 default:
                     Console.WriteLine("Incorrect parameter");
@@ -499,7 +507,7 @@ namespace FileCabinetApp
             DateTime time = DateTime.MinValue;
             try
             {
-                time = DateTime.Parse(input, CultureInfo.InvariantCulture);
+                time = DateTime.Parse(input, CultureInfo.CurrentCulture);
             }
             catch
             {
