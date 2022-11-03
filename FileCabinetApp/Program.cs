@@ -266,7 +266,7 @@ namespace FileCabinetApp
                 bool correct;
                 do
                 {
-                    Console.Write($"File already exists - rewrite {splittedString[1]}? [Y/n]");
+                    Console.Write($"File already exists - rewrite {splittedString[1]}? [Y/n] ");
                     correct = char.TryParse(Console.ReadLine(), out input);
                 }
                 while (!correct || (input != 'Y' && input != 'n'));

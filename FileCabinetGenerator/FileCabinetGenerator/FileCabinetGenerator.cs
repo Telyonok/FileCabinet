@@ -56,6 +56,8 @@ class FileCabinetGenerator
         {
             throw new ArgumentException($"Couldn't open/create file {path}.");
         }
+
+        Console.WriteLine($"{recordCount} records were written to {path}");
     }
 
     private static int FindValue(List<string> args, string firstCommand, string secondCommand, int defaultValue)
