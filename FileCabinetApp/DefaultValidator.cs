@@ -9,7 +9,7 @@ namespace FileCabinetApp
     /// <summary>
     /// Validates UnvalidatedRecordData using default methods.
     /// </summary>
-    internal class DefaultValidator : IRecordValidator
+    public class DefaultValidator : IRecordValidator
     {
         /// <inheritdoc/>
         public string GetValidatorName()

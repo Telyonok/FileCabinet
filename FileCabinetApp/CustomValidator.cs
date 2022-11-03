@@ -9,7 +9,7 @@ namespace FileCabinetApp
     /// <summary>
     /// Validates UnvalidatedRecordData using custom methods.
     /// </summary>
-    internal class CustomValidator : IRecordValidator
+    public class CustomValidator : IRecordValidator
     {
         /// <inheritdoc/>
         public Tuple<bool, string> ValidateNameString(string name)
