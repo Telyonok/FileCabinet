@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32929.385
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileCabinetGenerator", "FileCabinetGenerator\FileCabinetGenerator.csproj", "{FBEA34C9-C6A0-42B0-B348-EDD056CAA6DE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FBEA34C9-C6A0-42B0-B348-EDD056CAA6DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBEA34C9-C6A0-42B0-B348-EDD056CAA6DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBEA34C9-C6A0-42B0-B348-EDD056CAA6DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBEA34C9-C6A0-42B0-B348-EDD056CAA6DE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8EBEF8C8-A339-4E5F-B57D-256073132CE9}
+	EndGlobalSection
+EndGlobal

@@ -9,7 +9,7 @@ namespace FileCabinetApp
     /// <summary>
     /// Validates UnvalidatedRecordData using custom methods.
     /// </summary>
-    internal class CustomValidator : IRecordValidator
+    public class CustomValidator : IRecordValidator
     {
         /// <inheritdoc/>
         public Tuple<bool, string> ValidateNameString(string name)
@@ -80,6 +80,37 @@ namespace FileCabinetApp
         public string GetValidatorName()
         {
             return "custom";
+        }
+
+        /// <inheritdoc/>
+        public Tuple<bool, string> ValidateRecord(FileCabinetRecord record)
+        {
+            if (!this.ValidateNameString(record.FirstName).Item1)
+            {
+                return this.ValidateNameString(record.FirstName);
+            }
+            else if (!this.ValidateNameString(record.LastName).Item1)
+            {
+                return this.ValidateNameString(record.LastName);
+            }
+            else if (!this.ValidateSex(record.Sex).Item1)
+            {
+                return this.ValidateSex(record.Sex);
+            }
+            else if (!this.ValidateWeight(record.Weight).Item1)
+            {
+                return this.ValidateWeight(record.Weight);
+            }
+            else if (!this.ValidateHeight(record.Height).Item1)
+            {
+                return this.ValidateHeight(record.Height);
+            }
+            else if (!this.ValidateDateTime(record.DateOfBirth).Item1)
+            {
+                return this.ValidateDateTime(record.DateOfBirth);
+            }
+
+            return new Tuple<bool, string>(true, string.Empty);
         }
     }
 }

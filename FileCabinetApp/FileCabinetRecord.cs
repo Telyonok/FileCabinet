@@ -6,6 +6,52 @@
     public class FileCabinetRecord
     {
         /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetRecord"/> class.
+        /// </summary>
+        public FileCabinetRecord()
+        {
+            this.FirstName = string.Empty;
+            this.LastName = string.Empty;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetRecord"/> class.
+        /// </summary>
+        /// <param name="id">Record's id.</param>
+        /// <param name="firstName">Person's firstname.</param>
+        /// <param name="lastName">Person's lastname.</param>
+        /// <param name="sex">Person's sex.</param>
+        /// <param name="weight">Person's weight in kg.</param>
+        /// <param name="height">Person's height in cm.</param>
+        /// <param name="dateOfBirth">Person's date of birth.</param>
+        public FileCabinetRecord(int id, string firstName, string lastName, char sex, short weight, decimal height, DateTime dateOfBirth)
+        {
+            this.Id = id;
+            this.FirstName = firstName;
+            this.LastName = lastName;
+            this.Sex = sex;
+            this.Weight = weight;
+            this.Height = height;
+            this.DateOfBirth = dateOfBirth;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetRecord"/> class.
+        /// </summary>
+        /// <param name="id">Record's id.</param>
+        /// <param name="dataSet">Input data set.</param>
+        public FileCabinetRecord(int id, InputDataSet dataSet)
+        {
+            this.Id = id;
+            this.FirstName = dataSet.FirstName;
+            this.LastName = dataSet.LastName;
+            this.Sex = dataSet.Sex;
+            this.Weight = dataSet.Weight;
+            this.Height = dataSet.Height;
+            this.DateOfBirth = dataSet.DateOfBirth;
+        }
+
+        /// <summary>
         /// Gets or sets id value.
         /// </summary>
         /// <value>
@@ -19,7 +65,7 @@
         /// <value>
         /// firstName represents person's first name.
         /// </value>
-        public string? FirstName { get; set; }
+        public string FirstName { get; set; }
 
         /// <summary>
         /// Gets or sets lastName value.
@@ -27,7 +73,7 @@
         /// <value>
         /// lastName represents person's last name.
         /// </value>
-        public string? LastName { get; set; }
+        public string LastName { get; set; }
 
         /// <summary>
         /// Gets or sets sex value.

@@ -4,6 +4,40 @@
         <name>FileCabinetApp</name>
     </assembly>
     <members>
+        <member name="T:FileCabinetApp.CommandArgsManager">
+            <summary>
+            Provides correct parameter values for command line arguments.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandArgsManager.GetAllowedParametersByCommand(System.String)">
+            <summary>
+            Gets a list of allowed parameters for a console command.
+            </summary>
+            <param name="command">Entered command.</param>
+            <returns>Collection of allowed parameters.</returns>
+        </member>
+        <member name="M:FileCabinetApp.CommandArgsManager.GetParameterValueCount(System.String)">
+            <summary>
+            Gets count of values required after a parameter.
+            </summary>
+            <param name="parameter">Entered parameter.</param>
+            <returns>Count of values.</returns>
+        </member>
+        <member name="M:FileCabinetApp.CommandArgsManager.GetAllowedValuesByParameter(System.String)">
+            <summary>
+            Gets a list of allowed values for a parameter.
+            </summary>
+            <param name="parameter">Entered parameter.</param>
+            <returns>Collection of allowed values.</returns>
+        </member>
+        <member name="M:FileCabinetApp.CommandArgsManager.ValidateCommandArguments(System.String,System.String[])">
+            <summary>
+            Validates entered arguments.
+            </summary>
+            <param name="command">First entered argument.</param>
+            <param name="args">Other entered arguments.</param>
+            <returns>True if validation was succesful.</returns>
+        </member>
         <member name="T:FileCabinetApp.CustomValidator">
             <summary>
             Validates UnvalidatedRecordData using custom methods.
@@ -25,6 +59,9 @@
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.CustomValidator.GetValidatorName">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.CustomValidator.ValidateRecord(FileCabinetApp.FileCabinetRecord)">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.DefaultValidator">
@@ -50,10 +87,133 @@
         <member name="M:FileCabinetApp.DefaultValidator.ValidateHeight(System.Decimal)">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.DefaultValidator.ValidateRecord(FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetFilesystemService">
+            <summary>
+            Receives input and provides output of records to a file.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.#ctor(System.IO.FileStream,FileCabinetApp.IRecordValidator)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetFilesystemService"/> class.
+            </summary>
+            <param name="fileStream">File to work with.</param>
+            <param name="validator">Set of validation methods.</param>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetFilesystemService.Validator">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.GetServiceName">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.CreateRecord(FileCabinetApp.InputDataSet)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.EditRecord(System.Int32,FileCabinetApp.InputDataSet)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.FindByDateOfBirth(System.DateTime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.FindByFirstName(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.FindByLastName(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.GetRecords">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.GetStat">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.MakeSnapshot">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.Finish">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.RestoreSnapshot(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetMemoryService">
+            <summary>
+            Class <c>FileCabinetService</c> provides methods for creating, editting, listing,
+            finding and validating records.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.#ctor(FileCabinetApp.IRecordValidator)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetMemoryService"/> class.
+            </summary>
+            <param name="validator">Set of validation methods.</param>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetMemoryService.Validator">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.GetServiceName">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.CreateRecord(FileCabinetApp.InputDataSet)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.EditRecord(System.Int32,FileCabinetApp.InputDataSet)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.GetRecords">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.GetStat">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.FindByFirstName(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.FindByLastName(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.FindByDateOfBirth(System.DateTime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.MakeSnapshot">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.Finish">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.RestoreSnapshot(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
             <summary>
             Class <c>FileCabinetRecord</c> stores information about a person.
             </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecord.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecord"/> class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecord.#ctor(System.Int32,System.String,System.String,System.Char,System.Int16,System.Decimal,System.DateTime)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecord"/> class.
+            </summary>
+            <param name="id">Record's id.</param>
+            <param name="firstName">Person's firstname.</param>
+            <param name="lastName">Person's lastname.</param>
+            <param name="sex">Person's sex.</param>
+            <param name="weight">Person's weight in kg.</param>
+            <param name="height">Person's height in cm.</param>
+            <param name="dateOfBirth">Person's date of birth.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecord.#ctor(System.Int32,FileCabinetApp.InputDataSet)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecord"/> class.
+            </summary>
+            <param name="id">Record's id.</param>
+            <param name="dataSet">Input data set.</param>
         </member>
         <member name="P:FileCabinetApp.FileCabinetRecord.Id">
             <summary>
@@ -111,70 +271,266 @@
             dateOfBirth represents person's date of birth.
             </value>
         </member>
-        <member name="T:FileCabinetApp.FileCabinetService">
+        <member name="T:FileCabinetApp.FileCabinetRecordCsvReader">
             <summary>
-            Class <c>FileCabinetService</c> provides methods for creating, editting, listing,
-            finding and validating records.
+            Reads records from a csv file.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetService.#ctor(FileCabinetApp.IRecordValidator)">
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvReader.#ctor(System.IO.StreamReader)">
             <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetService"/> class.
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordCsvReader"/> class.
             </summary>
-            <param name="validator">Set of validation methods.</param>
+            <param name="streamReader">Stream to read from.</param>
         </member>
-        <member name="P:FileCabinetApp.FileCabinetService.Validator">
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvReader.ReadAll">
             <summary>
-            Gets validator used by the service.
+            Reads records from a csv file.
+            </summary>
+            <returns>List of read records.</returns>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordCsvWriter">
+            <summary>
+            Provides methods for csv outputing.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvWriter.#ctor(System.IO.StreamWriter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordCsvWriter"/> class.
+            </summary>
+            <param name="textWriter">Stream to write to.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvWriter.Write(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Writes record's information to file.
+            </summary>
+            <param name="record">Record to write.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvWriter.PrintParamNames">
+            <summary>
+            Prints names of parameters.
+            </summary>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordXmlReader">
+            <summary>
+            Reads records from a xml file.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlReader.#ctor(System.IO.StreamReader)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordXmlReader"/> class.
+            </summary>
+            <param name="reader">Stream to read from.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlReader.ReadAll">
+            <summary>
+            Reads records from a xml file.
+            </summary>
+            <returns>List of read records.</returns>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordXmlWriter">
+            <summary>
+            Provides methods for xml outputing.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.#ctor(System.IO.StreamWriter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordXmlWriter"/> class.
+            </summary>
+            <param name="textWriter">Stream to write to.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.Write(FileCabinetApp.FileCabinetRecord[])">
+            <summary>
+            Writes record's information to file.
+            </summary>
+            <param name="records">Records to write.</param>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetServiceSnapshot">
+            <summary>
+            Captures current record list.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.#ctor(System.Collections.Generic.List{FileCabinetApp.FileCabinetRecord})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/> class.
+            </summary>
+            <param name="recordList">List of records.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.GetRecords">
+            <summary>
+            Returns snapshot's records.
+            </summary>
+            <returns>Record array.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.SaveToCsv(System.IO.StreamWriter)">
+            <summary>
+            Creates and utilizes FileCabinetRecordCsvWriter instance.
+            </summary>
+            <param name="streamWriter">StreamWriter to use.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.SaveToXml(System.IO.StreamWriter)">
+            <summary>
+            Creates and utilizes FileCabinetRecordXmlWriter instance.
+            </summary>
+            <param name="streamWriter">StreamWriter to use.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.LoadFromCsv(System.IO.StreamReader)">
+            <summary>
+            Loads records from csv file.
+            </summary>
+            <param name="streamReader">Stream to read from.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.LoadFromXml(System.IO.StreamReader)">
+            <summary>
+            Loads records from xml file.
+            </summary>
+            <param name="streamReader">Stream to read from.</param>
+        </member>
+        <member name="T:FileCabinetApp.IFileCabinetService">
+            <summary>
+            Provides methods for record creation, editing and storage.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.IFileCabinetService.Validator">
+            <summary>
+            Gets validator value.
             </summary>
             <value>
-            validator.
+            Set of validation rules.
             </value>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetService.CreateRecord">
+        <member name="M:FileCabinetApp.IFileCabinetService.GetServiceName">
+            <summary>
+            Gets name of the service.
+            </summary>
+            <returns>Service name.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.CreateRecord(FileCabinetApp.InputDataSet)">
             <summary>
             Creates a new record after validating user input and returns it id.
             </summary>
+            <param name="dataSet">Input user data.</param>
             <returns> Record's id. </returns>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetService.EditRecord(System.Int32)">
+        <member name="M:FileCabinetApp.IFileCabinetService.EditRecord(System.Int32,FileCabinetApp.InputDataSet)">
             <summary>
             Edits a record after validating new input.
             </summary>
-            <param name="value">Record's number.</param>
+            <param name="value">Record's order number.</param>
+            <param name="dataSet">Input user data.</param>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetService.GetRecords">
+        <member name="M:FileCabinetApp.IFileCabinetService.GetRecords">
             <summary>
             Gets an array with all records from the <c>list</c>.
             </summary>
             <returns> Array with all records. </returns>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetService.GetStat">
+        <member name="M:FileCabinetApp.IFileCabinetService.GetStat">
             <summary>
             Returns the amount of created records.
             </summary>
             <returns> Count of elements in <c>list</c>. </returns>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetService.FindByFirstName(System.String)">
+        <member name="M:FileCabinetApp.IFileCabinetService.FindByFirstName(System.String)">
             <summary>
             Returns all records with their first name equal to <c>firstName</c>.
             </summary>
             <param name="firstName">Name to search by.</param>
             <returns> Array of all records with corresponding first name. </returns>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetService.FindByLastName(System.String)">
+        <member name="M:FileCabinetApp.IFileCabinetService.FindByLastName(System.String)">
             <summary>
             Returns all records with their last name equal to <c>lastName</c>.
             </summary>
             <param name="lastName">Name to search by.</param>
             <returns> Array of all records with corresponding last name. </returns>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetService.FindByDateOfBirth(System.DateTime)">
+        <member name="M:FileCabinetApp.IFileCabinetService.FindByDateOfBirth(System.DateTime)">
             <summary>
             Returns all records with their date of birth equal to <c>dateOfBirth</c>.
             </summary>
             <param name="dateOfBirth">Date to search by.</param>
             <returns> Array of all records with corresponding date of birth. </returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.MakeSnapshot">
+            <summary>
+            Creates a snapshot of current recordList.
+            </summary>
+            <returns>Created recordList snapshot.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.Finish">
+            <summary>
+            Service cleans after itself and finishes it's work.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.RestoreSnapshot(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <summary>
+            Loads records from snapshot.
+            </summary>
+            <param name="snapshot">Snapshot with new records.</param>
+        </member>
+        <member name="T:FileCabinetApp.InputDataSet">
+            <summary>
+            Set of input data.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.InputDataSet.#ctor(System.String,System.String,System.Char,System.Int16,System.Decimal,System.DateTime)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.InputDataSet"/> class.
+            </summary>
+            <param name="firstName">Person's firstname.</param>
+            <param name="lastName">Person's lastname.</param>
+            <param name="sex">Person's sex.</param>
+            <param name="weight">Person's weight in kg.</param>
+            <param name="height">Person's height in cm.</param>
+            <param name="dateOfBirth">Person's date of birth.</param>
+        </member>
+        <member name="P:FileCabinetApp.InputDataSet.FirstName">
+            <summary>
+            Gets Person's firstname.
+            </summary>
+            <value>
+            Person's firstname.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.InputDataSet.LastName">
+            <summary>
+            Gets Person's lastname.
+            </summary>
+            <value>
+            Person's lastname.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.InputDataSet.Sex">
+            <summary>
+            Gets Person's sex.
+            </summary>
+            <value>
+            Person's sex.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.InputDataSet.Weight">
+            <summary>
+            Gets Person's weight in kg.
+            </summary>
+            <value>
+            Person's weight.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.InputDataSet.Height">
+            <summary>
+            Gets Person's height in cm.
+            </summary>
+            <value>
+            Person's height.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.InputDataSet.DateOfBirth">
+            <summary>
+            Gets Person's date of birth.
+            </summary>
+            <value>
+            Person's date of birth.
+            </value>
         </member>
         <member name="T:FileCabinetApp.InputMode">
             <summary>
@@ -202,40 +558,47 @@
             </summary>
             <returns>Service name.</returns>
         </member>
+        <member name="M:FileCabinetApp.IRecordValidator.ValidateRecord(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Validates record using validation methods.
+            </summary>
+            <param name="record">Record to validate.</param>
+            <returns>Tuple, where first item indicates if validation is succesful and second item is an error message.</returns>
+        </member>
         <member name="M:FileCabinetApp.IRecordValidator.ValidateNameString(System.String)">
             <summary>
             Validates name parameter.
             </summary>
             <param name="name">Person's name.</param>
-            <returns>Tuple, where first item indicates if validation is succesful and second item is the name of validated parameter.</returns>
+            <returns>Tuple, where first item indicates if validation is succesful and second item is an error message.</returns>
         </member>
         <member name="M:FileCabinetApp.IRecordValidator.ValidateDateTime(System.DateTime)">
             <summary>
             Validates date of birth parameter.
             </summary>
             <param name="dateTime">Person's birth day.</param>
-            <returns>Tuple, where first item indicates if validation is succesful and second item is the name of validated parameter.</returns>
+            <returns>Tuple, where first item indicates if validation is succesful and second item is an error message.</returns>
         </member>
         <member name="M:FileCabinetApp.IRecordValidator.ValidateSex(System.Char)">
             <summary>
             Validates sex parameter.
             </summary>
             <param name="sex">Person's sex.</param>
-            <returns>Tuple, where first item indicates if validation is succesful and second item is the name of validated parameter.</returns>
+            <returns>Tuple, where first item indicates if validation is succesful and second item is an error message.</returns>
         </member>
         <member name="M:FileCabinetApp.IRecordValidator.ValidateWeight(System.Int16)">
             <summary>
             Validates weight parameter.
             </summary>
             <param name="weight">Person's weight in kg.</param>
-            <returns>Tuple, where first item indicates if validation is succesful and second item is the name of validated parameter.</returns>
+            <returns>Tuple, where first item indicates if validation is succesful and second item is an error message.</returns>
         </member>
         <member name="M:FileCabinetApp.IRecordValidator.ValidateHeight(System.Decimal)">
             <summary>
             Validates height parameter.
             </summary>
             <param name="height">Person's height in cm.</param>
-            <returns>Tuple, where first item indicates if validation is succesful and second item is the name of validated parameter.</returns>
+            <returns>Tuple, where first item indicates if validation is succesful and second item is an error message.</returns>
         </member>
         <member name="T:FileCabinetApp.Program">
             <summary>
@@ -247,6 +610,22 @@
             Accepts input and calls corresponding methods.
             </summary>
             <param name="args">Command line arguments.</param>
+        </member>
+        <member name="T:FileCabinetApp.Properties.Resources">
+            <summary>
+              Класс ресурса со строгой типизацией для поиска локализованных строк и т.д.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.Properties.Resources.ResourceManager">
+            <summary>
+              Возвращает кэшированный экземпляр ResourceManager, использованный этим классом.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.Properties.Resources.Culture">
+            <summary>
+              Перезаписывает свойство CurrentUICulture текущего потока для всех
+              обращений к ресурсу с помощью этого класса ресурса со строгой типизацией.
+            </summary>
         </member>
     </members>
 </doc>
