@@ -2,7 +2,7 @@
   "profiles": {
     "FileCabinetApp": {
       "commandName": "Project",
-      "commandLineArgs": "--validation-rules=CustOM --storage memory"
+      "commandLineArgs": "--validation-rules=CustOM --storage file"
     }
   }
 }

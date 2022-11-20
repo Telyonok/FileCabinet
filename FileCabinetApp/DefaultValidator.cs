@@ -81,5 +81,36 @@ namespace FileCabinetApp
 
             return Tuple.Create(isValid, "Height must be from 0 to 300");
         }
+
+        /// <inheritdoc/>
+        public Tuple<bool, string> ValidateRecord(FileCabinetRecord record)
+        {
+            if (!this.ValidateNameString(record.FirstName).Item1)
+            {
+                return this.ValidateNameString(record.FirstName);
+            }
+            else if (!this.ValidateNameString(record.LastName).Item1)
+            {
+                return this.ValidateNameString(record.LastName);
+            }
+            else if (!this.ValidateSex(record.Sex).Item1)
+            {
+                return this.ValidateSex(record.Sex);
+            }
+            else if (!this.ValidateWeight(record.Weight).Item1)
+            {
+                return this.ValidateWeight(record.Weight);
+            }
+            else if (!this.ValidateHeight(record.Height).Item1)
+            {
+                return this.ValidateHeight(record.Height);
+            }
+            else if (!this.ValidateDateTime(record.DateOfBirth).Item1)
+            {
+                return this.ValidateDateTime(record.DateOfBirth);
+            }
+
+            return new Tuple<bool, string>(true, string.Empty);
+        }
     }
 }

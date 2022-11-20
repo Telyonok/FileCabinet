@@ -61,6 +61,9 @@
         <member name="M:FileCabinetApp.CustomValidator.GetValidatorName">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.CustomValidator.ValidateRecord(FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.DefaultValidator">
             <summary>
             Validates UnvalidatedRecordData using default methods.
@@ -82,6 +85,9 @@
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.DefaultValidator.ValidateHeight(System.Decimal)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.DefaultValidator.ValidateRecord(FileCabinetApp.FileCabinetRecord)">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.FileCabinetFilesystemService">
@@ -129,6 +135,9 @@
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.Finish">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.RestoreSnapshot(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetMemoryService">
             <summary>
             Class <c>FileCabinetService</c> provides methods for creating, editting, listing,
@@ -174,6 +183,9 @@
         <member name="M:FileCabinetApp.FileCabinetMemoryService.Finish">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.RestoreSnapshot(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
             <summary>
             Class <c>FileCabinetRecord</c> stores information about a person.
@@ -205,7 +217,7 @@
         </member>
         <member name="P:FileCabinetApp.FileCabinetRecord.Id">
             <summary>
-            Gets id value.
+            Gets or sets id value.
             </summary>
             <value>
             id represents record's identification number.
@@ -213,7 +225,7 @@
         </member>
         <member name="P:FileCabinetApp.FileCabinetRecord.FirstName">
             <summary>
-            Gets firstName value.
+            Gets or sets firstName value.
             </summary>
             <value>
             firstName represents person's first name.
@@ -221,7 +233,7 @@
         </member>
         <member name="P:FileCabinetApp.FileCabinetRecord.LastName">
             <summary>
-            Gets lastName value.
+            Gets or sets lastName value.
             </summary>
             <value>
             lastName represents person's last name.
@@ -229,7 +241,7 @@
         </member>
         <member name="P:FileCabinetApp.FileCabinetRecord.Sex">
             <summary>
-            Gets sex value.
+            Gets or sets sex value.
             </summary>
             <value>
             sex represents person's sex.
@@ -237,7 +249,7 @@
         </member>
         <member name="P:FileCabinetApp.FileCabinetRecord.Weight">
             <summary>
-            Gets weight value.
+            Gets or sets weight value.
             </summary>
             <value>
             weight represents person's weight in kilograms.
@@ -245,7 +257,7 @@
         </member>
         <member name="P:FileCabinetApp.FileCabinetRecord.Height">
             <summary>
-            Gets height value.
+            Gets or sets height value.
             </summary>
             <value>
             height represents person's height in cm.
@@ -253,11 +265,28 @@
         </member>
         <member name="P:FileCabinetApp.FileCabinetRecord.DateOfBirth">
             <summary>
-            Gets dateOfBirth value.
+            Gets or sets dateOfBirth value.
             </summary>
             <value>
             dateOfBirth represents person's date of birth.
             </value>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordCsvReader">
+            <summary>
+            Reads records from a csv file.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvReader.#ctor(System.IO.StreamReader)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordCsvReader"/> class.
+            </summary>
+            <param name="streamReader">Stream to read from.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvReader.ReadAll">
+            <summary>
+            Reads records from a csv file.
+            </summary>
+            <returns>List of read records.</returns>
         </member>
         <member name="T:FileCabinetApp.FileCabinetRecordCsvWriter">
             <summary>
@@ -280,6 +309,23 @@
             <summary>
             Prints names of parameters.
             </summary>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordXmlReader">
+            <summary>
+            Reads records from a xml file.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlReader.#ctor(System.IO.StreamReader)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordXmlReader"/> class.
+            </summary>
+            <param name="reader">Stream to read from.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlReader.ReadAll">
+            <summary>
+            Reads records from a xml file.
+            </summary>
+            <returns>List of read records.</returns>
         </member>
         <member name="T:FileCabinetApp.FileCabinetRecordXmlWriter">
             <summary>
@@ -309,6 +355,12 @@
             </summary>
             <param name="recordList">List of records.</param>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.GetRecords">
+            <summary>
+            Returns snapshot's records.
+            </summary>
+            <returns>Record array.</returns>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.SaveToCsv(System.IO.StreamWriter)">
             <summary>
             Creates and utilizes FileCabinetRecordCsvWriter instance.
@@ -320,6 +372,18 @@
             Creates and utilizes FileCabinetRecordXmlWriter instance.
             </summary>
             <param name="streamWriter">StreamWriter to use.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.LoadFromCsv(System.IO.StreamReader)">
+            <summary>
+            Loads records from csv file.
+            </summary>
+            <param name="streamReader">Stream to read from.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.LoadFromXml(System.IO.StreamReader)">
+            <summary>
+            Loads records from xml file.
+            </summary>
+            <param name="streamReader">Stream to read from.</param>
         </member>
         <member name="T:FileCabinetApp.IFileCabinetService">
             <summary>
@@ -397,6 +461,12 @@
             <summary>
             Service cleans after itself and finishes it's work.
             </summary>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.RestoreSnapshot(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <summary>
+            Loads records from snapshot.
+            </summary>
+            <param name="snapshot">Snapshot with new records.</param>
         </member>
         <member name="T:FileCabinetApp.InputDataSet">
             <summary>
@@ -488,40 +558,47 @@
             </summary>
             <returns>Service name.</returns>
         </member>
+        <member name="M:FileCabinetApp.IRecordValidator.ValidateRecord(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Validates record using validation methods.
+            </summary>
+            <param name="record">Record to validate.</param>
+            <returns>Tuple, where first item indicates if validation is succesful and second item is an error message.</returns>
+        </member>
         <member name="M:FileCabinetApp.IRecordValidator.ValidateNameString(System.String)">
             <summary>
             Validates name parameter.
             </summary>
             <param name="name">Person's name.</param>
-            <returns>Tuple, where first item indicates if validation is succesful and second item is the name of validated parameter.</returns>
+            <returns>Tuple, where first item indicates if validation is succesful and second item is an error message.</returns>
         </member>
         <member name="M:FileCabinetApp.IRecordValidator.ValidateDateTime(System.DateTime)">
             <summary>
             Validates date of birth parameter.
             </summary>
             <param name="dateTime">Person's birth day.</param>
-            <returns>Tuple, where first item indicates if validation is succesful and second item is the name of validated parameter.</returns>
+            <returns>Tuple, where first item indicates if validation is succesful and second item is an error message.</returns>
         </member>
         <member name="M:FileCabinetApp.IRecordValidator.ValidateSex(System.Char)">
             <summary>
             Validates sex parameter.
             </summary>
             <param name="sex">Person's sex.</param>
-            <returns>Tuple, where first item indicates if validation is succesful and second item is the name of validated parameter.</returns>
+            <returns>Tuple, where first item indicates if validation is succesful and second item is an error message.</returns>
         </member>
         <member name="M:FileCabinetApp.IRecordValidator.ValidateWeight(System.Int16)">
             <summary>
             Validates weight parameter.
             </summary>
             <param name="weight">Person's weight in kg.</param>
-            <returns>Tuple, where first item indicates if validation is succesful and second item is the name of validated parameter.</returns>
+            <returns>Tuple, where first item indicates if validation is succesful and second item is an error message.</returns>
         </member>
         <member name="M:FileCabinetApp.IRecordValidator.ValidateHeight(System.Decimal)">
             <summary>
             Validates height parameter.
             </summary>
             <param name="height">Person's height in cm.</param>
-            <returns>Tuple, where first item indicates if validation is succesful and second item is the name of validated parameter.</returns>
+            <returns>Tuple, where first item indicates if validation is succesful and second item is an error message.</returns>
         </member>
         <member name="T:FileCabinetApp.Program">
             <summary>

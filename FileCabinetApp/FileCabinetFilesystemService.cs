@@ -125,7 +125,7 @@ namespace FileCabinetApp
         /// <inheritdoc/>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
-            throw new NotImplementedException();
+            return new FileCabinetServiceSnapshot(this.GetRecords().ToList());
         }
 
         /// <inheritdoc/>
@@ -134,6 +134,17 @@ namespace FileCabinetApp
             this.fileStream.Flush();
             this.fileStream.Close();
             this.fileStream.Dispose();
+        }
+
+        /// <inheritdoc/>
+        public void RestoreSnapshot(FileCabinetServiceSnapshot snapshot)
+        {
+            this.fileStream.Position = 0;
+            this.recordCount = 0;
+            foreach (var record in snapshot.GetRecords())
+            {
+                this.CreateRecord(record);
+            }
         }
 
         private void WriteToStream(InputDataSet dataSet)
@@ -196,6 +207,11 @@ namespace FileCabinetApp
             }
 
             return new ReadOnlyCollection<FileCabinetRecord>(records);
+        }
+
+        private int CreateRecord(FileCabinetRecord record)
+        {
+            return this.CreateRecord(new InputDataSet(record.FirstName, record.LastName, record.Sex, record.Weight, record.Height, record.DateOfBirth));
         }
     }
 }

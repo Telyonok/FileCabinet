@@ -84,5 +84,11 @@ namespace FileCabinetApp
         /// Service cleans after itself and finishes it's work.
         /// </summary>
         public void Finish();
+
+        /// <summary>
+        /// Loads records from snapshot.
+        /// </summary>
+        /// <param name="snapshot">Snapshot with new records.</param>
+        public void RestoreSnapshot(FileCabinetServiceSnapshot snapshot);
     }
 }

@@ -52,7 +52,7 @@
         }
 
         /// <summary>
-        /// Gets id value.
+        /// Gets or sets id value.
         /// </summary>
         /// <value>
         /// id represents record's identification number.
@@ -60,7 +60,7 @@
         public int Id { get; set; }
 
         /// <summary>
-        /// Gets firstName value.
+        /// Gets or sets firstName value.
         /// </summary>
         /// <value>
         /// firstName represents person's first name.
@@ -68,7 +68,7 @@
         public string FirstName { get; set; }
 
         /// <summary>
-        /// Gets lastName value.
+        /// Gets or sets lastName value.
         /// </summary>
         /// <value>
         /// lastName represents person's last name.
@@ -76,7 +76,7 @@
         public string LastName { get; set; }
 
         /// <summary>
-        /// Gets sex value.
+        /// Gets or sets sex value.
         /// </summary>
         /// <value>
         /// sex represents person's sex.
@@ -84,7 +84,7 @@
         public char Sex { get; set; }
 
         /// <summary>
-        /// Gets weight value.
+        /// Gets or sets weight value.
         /// </summary>
         /// <value>
         /// weight represents person's weight in kilograms.
@@ -92,7 +92,7 @@
         public short Weight { get; set; }
 
         /// <summary>
-        /// Gets height value.
+        /// Gets or sets height value.
         /// </summary>
         /// <value>
         /// height represents person's height in cm.
@@ -100,7 +100,7 @@
         public decimal Height { get; set; }
 
         /// <summary>
-        /// Gets dateOfBirth value.
+        /// Gets or sets dateOfBirth value.
         /// </summary>
         /// <value>
         /// dateOfBirth represents person's date of birth.

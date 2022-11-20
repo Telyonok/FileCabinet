@@ -11,10 +11,10 @@ namespace FileCabinetApp
     /// </summary>
     public class FileCabinetMemoryService : IFileCabinetService
     {
-        private readonly List<FileCabinetRecord> list = new ();
-        private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new ();
-        private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new ();
-        private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new ();
+        private Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new ();
+        private Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new ();
+        private Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new ();
+        private List<FileCabinetRecord> list = new ();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetMemoryService"/> class.
@@ -122,18 +122,34 @@ namespace FileCabinetApp
             return;
         }
 
+        /// <inheritdoc/>
+        public void RestoreSnapshot(FileCabinetServiceSnapshot snapshot)
+        {
+            List<FileCabinetRecord> newList = snapshot.GetRecords().ToList<FileCabinetRecord>();
+            this.list = new (newList);
+            this.firstNameDictionary.Clear();
+            this.lastNameDictionary.Clear();
+            this.dateOfBirthDictionary.Clear();
+
+            int realId = 0;
+            foreach (var record in newList)
+            {
+                Tuple<bool, string> tuple = this.Validator.ValidateRecord(record);
+                if (!tuple.Item1)
+                {
+                    Console.WriteLine($"Error: \"{tuple.Item2}\" caused by record with Id: {record.Id}. Skipping.");
+                    this.list.Remove(record);
+                    continue;
+                }
+
+                record.Id = realId;
+                this.UpdateDictionaries(record);
+                realId++;
+            }
+        }
+
         private void UpdateDictionaries(FileCabinetRecord record)
         {
-            if (record.FirstName is null)
-            {
-                throw new MissingMemberException(nameof(record.FirstName));
-            }
-
-            if (record.LastName is null)
-            {
-                throw new MissingMemberException(nameof(record.LastName));
-            }
-
             string firstName = record.FirstName.ToLower(CultureInfo.InvariantCulture);
             string lastName = record.LastName.ToLower(CultureInfo.InvariantCulture);
 

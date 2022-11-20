@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
 using System.Reflection.Metadata;
@@ -29,6 +30,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("edit", Edit),
             new Tuple<string, Action<string>>("find", Find),
             new Tuple<string, Action<string>>("export", Export),
+            new Tuple<string, Action<string>>("import", Import),
         };
 
         private static readonly string[][] HelpMessages = new string[][]
@@ -41,6 +43,7 @@ namespace FileCabinetApp
             new string[] { "edit", "edits a chosen record", "The 'edit <id>' command edits a record with corresponding Id" },
             new string[] { "find", "finds all records with given parameter value", "The 'find <parameter> \"<value>\"' command finds all records with corresponding value" },
             new string[] { "export", "exports all current records to a file", "The 'export <parameter>' command outputs all current records to a file of <parameter> format. Possible values are: csv, xml" },
+            new string[] { "import", "imports all records from a file", "The 'import <parameter> <path>' command imports all records from the <path> file of <parameter> format. Possible <parameter> values are: csv, xml" },
         };
 
         private static bool isRunning = true;
@@ -303,6 +306,46 @@ namespace FileCabinetApp
 
             Console.WriteLine($"All records are exported to file {splittedString[1]}.");
             streamWriter.Close();
+        }
+
+        private static void Import(string parameters)
+        {
+            string[] splittedParameters = parameters.Split(' ');
+            if (splittedParameters.Length != 2)
+            {
+                Console.WriteLine("'Import' command should have 2 parameters.");
+                return;
+            }
+
+            string path = splittedParameters[1];
+            FileStream fileStream;
+            try
+            {
+                fileStream = new (path, FileMode.Open, FileAccess.Read);
+            }
+            catch
+            {
+                Console.WriteLine($"Couldn't open '{path}' file.");
+                return;
+            }
+
+            FileCabinetServiceSnapshot snapshot = fileCabinetService.MakeSnapshot();
+
+            if (splittedParameters[0] == "csv")
+            {
+                snapshot.LoadFromCsv(new StreamReader(fileStream));
+            }
+            else if (splittedParameters[0] == "xml")
+            {
+                snapshot.LoadFromXml(new StreamReader(fileStream));
+            }
+            else
+            {
+                Console.WriteLine("First value must be \"csv\" or \"xml\".");
+                return;
+            }
+
+            fileCabinetService.RestoreSnapshot(snapshot);
         }
 
         private static void ListRecordArray(ReadOnlyCollection<FileCabinetRecord> records)
